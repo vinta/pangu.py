@@ -27,3 +27,9 @@ Usage
 
     >>> pangu.spacing(u'新阿姆斯特朗炫風噴射阿姆斯特朗砲')
     u'新阿姆斯特朗炫風噴射阿姆斯特朗砲'
+
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/vinta/pangu.py/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+
