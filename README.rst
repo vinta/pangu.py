@@ -1,15 +1,15 @@
 pangu
 =====
 
-.. image:: http://img.shields.io/travis/vinta/pangu.py.svg
+.. image:: https://travis-ci.org/vinta/pangu.py.png?branch=master
     :alt: Build Badge
     :target: https://travis-ci.org/vinta/pangu.py
 
-.. image:: http://img.shields.io/coveralls/vinta/pangu.py.svg
+.. image:: https://coveralls.io/repos/vinta/pangu.py/badge.png?branch=master
     :alt: Coverage Badge
     :target: https://coveralls.io/r/vinta/pangu.py
 
-.. image:: http://img.shields.io/pypi/v/pangu.svg
+.. image:: https://badge.fury.io/py/pangu.png
     :alt: Version Badge
     :target: http://badge.fury.io/py/pangu
 
