@@ -1,4 +1,5 @@
 # coding: utf-8
+from __future__ import unicode_literals
 
 import re
 
@@ -32,20 +33,20 @@ __all__ = ['spacing', ]
 #     return re.compile(re_str, flags=re.IGNORECASE|re.UNICODE)
 
 
-CJK_QUOTE_L_RE = re.compile(ur'([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])(["\'])', flags=re.IGNORECASE)
-CJK_QUOTE_R_RE = re.compile(ur'(["\'])([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])', flags=re.IGNORECASE)
-CJK_QUOTE_FIX_RE = re.compile(ur'(["\']+)(\s*)(.+?)(\s*)(["\']+)', flags=re.IGNORECASE)
+CJK_QUOTE_L_RE = re.compile(r'([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])(["\'])', flags=re.IGNORECASE)
+CJK_QUOTE_R_RE = re.compile(r'(["\'])([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])', flags=re.IGNORECASE)
+CJK_QUOTE_FIX_RE = re.compile(r'(["\']+)(\s*)(.+?)(\s*)(["\']+)', flags=re.IGNORECASE)
 
-CJK_BRACKET_RE = re.compile(ur'([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])([<\[\{\(]+(.*?)[>\]\}\)]+)([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])', flags=re.IGNORECASE)
-CJK_BRACKETFIX_RE = re.compile(ur'([<\[\{\(]+)(\s*)(.+?)(\s*)([>\]\}\)]+)', flags=re.IGNORECASE)
-CJK_BRACKET_L_RE = re.compile(ur'([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])([<>\[\]\{\}\(\)])', flags=re.IGNORECASE)
-CJK_BRACKET_R_RE = re.compile(ur'([<>\[\]\{\}\(\)])([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])', flags=re.IGNORECASE)
+CJK_BRACKET_RE = re.compile(r'([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])([<\[\{\(]+(.*?)[>\]\}\)]+)([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])', flags=re.IGNORECASE)
+CJK_BRACKETFIX_RE = re.compile(r'([<\[\{\(]+)(\s*)(.+?)(\s*)([>\]\}\)]+)', flags=re.IGNORECASE)
+CJK_BRACKET_L_RE = re.compile(r'([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])([<>\[\]\{\}\(\)])', flags=re.IGNORECASE)
+CJK_BRACKET_R_RE = re.compile(r'([<>\[\]\{\}\(\)])([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])', flags=re.IGNORECASE)
 
-CJK_HASH_L_RE = re.compile(ur'([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])(#(\S+))', flags=re.IGNORECASE)
-CJK_HASH_R_RE = re.compile(ur'((\S+)#)([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])', flags=re.IGNORECASE)
+CJK_HASH_L_RE = re.compile(r'([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])(#(\S+))', flags=re.IGNORECASE)
+CJK_HASH_R_RE = re.compile(r'((\S+)#)([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])', flags=re.IGNORECASE)
 
-CJK_L_RE = re.compile(ur'([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])([a-z0-9`@&%=\$\^\*\-\+\|\/\\])', flags=re.IGNORECASE)
-CJK_R_RE = re.compile(ur'([a-z0-9`~!%&=;\|\,\.\:\?\$\^\*\-\+\/\\])([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])', flags=re.IGNORECASE)
+CJK_L_RE = re.compile(r'([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])([a-z0-9`@&%=\$\^\*\-\+\|\/\\])', flags=re.IGNORECASE)
+CJK_R_RE = re.compile(r'([a-z0-9`~!%&=;\|\,\.\:\?\$\^\*\-\+\/\\])([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])', flags=re.IGNORECASE)
 
 
 def spacing(text):
