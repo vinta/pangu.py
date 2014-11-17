@@ -104,7 +104,7 @@ class PanguTestCase(unittest.TestCase):
         new_text = pangu.spacing('前面*後面')
         self.assertEqual(new_text, '前面 * 後面')
 
-    def test_13(self):
+    def test_back_quote(self):
         new_text = pangu.spacing('前面`後面')
         self.assertEqual(new_text, '前面 ` 後面')
 
@@ -116,7 +116,7 @@ class PanguTestCase(unittest.TestCase):
         new_text = pangu.spacing('前面-後面')
         self.assertEqual(new_text, '前面 - 後面')
 
-    def test_14(self):
+    def test_equal(self):
         new_text = pangu.spacing('前面=後面')
         self.assertEqual(new_text, '前面 = 後面')
 
