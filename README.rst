@@ -1,17 +1,17 @@
 pangu
 =====
 
-.. image:: https://travis-ci.org/vinta/pangu.py.png?branch=master
+.. image:: http://img.shields.io/travis/vinta/pangu.py/master.svg?style=flat-square
     :alt: Build Badge
     :target: https://travis-ci.org/vinta/pangu.py
 
-.. image:: https://coveralls.io/repos/vinta/pangu.py/badge.png?branch=master
+.. image:: http://img.shields.io/coveralls/vinta/pangu.py/master.svg?style=flat-square
     :alt: Coverage Badge
     :target: https://coveralls.io/r/vinta/pangu.py
 
-.. image:: https://badge.fury.io/py/pangu.png
+.. image:: http://img.shields.io/pypi/v/pangu.svg?style=flat-square
     :alt: Version Badge
-    :target: http://badge.fury.io/py/pangu
+    :target: https://pypi.python.org/pypi/pangu
 
 Paranoid text spacing for good readability, to automatically insert whitespace between CJK (Chinese, Japanese, Korean), half-width English, digit and symbol characters.
 
