@@ -13,13 +13,12 @@ pangu
     :alt: Version Badge
     :target: http://badge.fury.io/py/pangu
 
-.. image:: https://d2weczhvl823v0.cloudfront.net/vinta/pangu.py/trend.png
-    :alt: Bitdeli badge
-    :target: https://bitdeli.com/free
-
-Spacing texts using Python! Insert a white space between full-width characters (Chinese, Japanese, etc.) and half-width alphanumerics. For good readability.
+Paranoid text spacing for good readability, to automatically insert whitespace between CJK (Chinese, Japanese, Korean), half-width English, digit and symbol characters.
 
 JavaScript version: `pangu.js <https://github.com/vinta/paranoid-auto-spacing>`_
+Node.js version: `pangu.node <https://github.com/huei90/pangu.node>`_
+Python version: `pangu.py <https://github.com/vinta/pangu.py>`_
+Java version: `pangu.java <https://github.com/vinta/pangu.java>`_
 
 Installation
 ============
