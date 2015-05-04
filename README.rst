@@ -15,10 +15,11 @@ pangu
 
 Paranoid text spacing for good readability, to automatically insert whitespace between CJK (Chinese, Japanese, Korean), half-width English, digit and symbol characters.
 
+- Go version: `pangu.go <https://github.com/vinta/pangu>`_
+- Java version: `pangu.java <https://github.com/vinta/pangu.java>`_
 - JavaScript version: `pangu.js <https://github.com/vinta/paranoid-auto-spacing>`_
 - Node.js version: `pangu.node <https://github.com/huei90/pangu.node>`_
 - Python version: `pangu.py <https://github.com/vinta/pangu.py>`_
-- Java version: `pangu.java <https://github.com/vinta/pangu.java>`_
 - Ruby version: `pangu.rb <https://github.com/dlackty/pangu.rb>`_
 
 Installation
