@@ -19,6 +19,7 @@ Paranoid text spacing for good readability, to automatically insert whitespace b
 - Node.js version: `pangu.node <https://github.com/huei90/pangu.node>`_
 - Python version: `pangu.py <https://github.com/vinta/pangu.py>`_
 - Java version: `pangu.java <https://github.com/vinta/pangu.java>`_
+- Ruby version: `pangu.rb <https://github.com/dlackty/pangu.rb>`_
 
 Installation
 ============
