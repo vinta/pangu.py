@@ -8,6 +8,8 @@ try:
 except ImportError:
     from distutils.core import setup
 
+import pangu
+
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
@@ -22,10 +24,10 @@ install_requires = list(filter(None, requirements_lines))
 
 setup(
     name='pangu',
-    version='1.0.0',
-    description='Spacing texts using Python! Insert a white space between full-width characters (Chinese, Japanese, etc.) and half-width alphanumerics. For good readability.',
+    version=pangu.__version__,
+    description='Paranoid text spacing for good readability, to automatically insert whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).',
     long_description=long_description,
-    keywords='white space text spacing readability',
+    keywords='pangu space white text spacing readability',
     author='Vinta Chen',
     author_email='vinta.chen@gmail.com',
     url='https://github.com/vinta/pangu.py',
@@ -36,7 +38,7 @@ setup(
     test_suite='test_pangu',
     zip_safe=False,
     classifiers=(
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
@@ -48,7 +50,13 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Education',
         'Topic :: Software Development :: Internationalization',
         'Topic :: Software Development :: Libraries',

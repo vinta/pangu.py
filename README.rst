@@ -10,6 +10,9 @@ pangu
 .. image:: http://img.shields.io/pypi/v/pangu.svg?style=flat-square
     :target: https://pypi.python.org/pypi/pangu
 
+.. image:: https://pypip.in/py_versions/pangu/badge.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/pangu
+
 .. image:: https://img.shields.io/badge/made%20with-%e2%9d%a4-ff69b4.svg?style=flat-square
     :target: http://vinta.ws
 
