@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import re
 
 
-__version__ = '2.5.6'
+__version__ = '2.5.6.2'
 __all__ = ['spacing', ]
 
 
