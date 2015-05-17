@@ -9,14 +9,20 @@ import pangu
 class PanguTestCase(unittest.TestCase):
 
     def test_spacing(self):
-        self.assertEqual(u'JUST WE 就是 JUST WE，既不偉大也不卑微！', pangu.spacing('JUST WE就是JUST WE，既不偉大也不卑微！'))
-        self.assertEqual(u'JUST WE 就是 JUST WE，既不偉大也不卑微！', pangu.spacing(u'JUST WE就是JUST WE，既不偉大也不卑微！'))
-
         self.assertEqual(u'新八的構造成分有 95% 是眼鏡、3% 是水、2% 是垃圾', pangu.spacing('新八的構造成分有95%是眼鏡、3%是水、2%是垃圾'))
         self.assertEqual(u'新八的構造成分有 95% 是眼鏡、3% 是水、2% 是垃圾', pangu.spacing(u'新八的構造成分有95%是眼鏡、3%是水、2%是垃圾'))
 
         self.assertEqual(u'所以, 請問 Jackey 的鼻子有幾個? 3.14 個!', pangu.spacing('所以,請問Jackey的鼻子有幾個?3.14個!'))
         self.assertEqual(u'所以, 請問 Jackey 的鼻子有幾個? 3.14 個!', pangu.spacing(u'所以,請問Jackey的鼻子有幾個?3.14個!'))
+
+        self.assertEqual(u'JUST WE 就是 JUST WE，既不偉大也不卑微！', pangu.spacing('JUST WE就是JUST WE，既不偉大也不卑微！'))
+        self.assertEqual(u'JUST WE 就是 JUST WE，既不偉大也不卑微！', pangu.spacing(u'JUST WE就是JUST WE，既不偉大也不卑微！'))
+
+        self.assertEqual(u'搭載 MP3 播放器，連續播放時數最長達到 124 小時的超強利刃…… 菊一文字 RX-7!', pangu.spacing('搭載MP3播放器，連續播放時數最長達到124小時的超強利刃……菊一文字RX-7!'))
+        self.assertEqual(u'搭載 MP3 播放器，連續播放時數最長達到 124 小時的超強利刃…… 菊一文字 RX-7!', pangu.spacing(u'搭載MP3播放器，連續播放時數最長達到124小時的超強利刃……菊一文字RX-7!'))
+
+    def test_spacing_too_short(self):
+        self.assertEqual(u'V', pangu.spacing('V'))
 
     def test_tilde(self):
         self.assertEqual(u'前面~ 後面', pangu.spacing('前面~後面'))
