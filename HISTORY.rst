@@ -1,6 +1,12 @@
 History
 =======
 
+2.5.6.3 (2015-05-18)
+++++++++++++++++++++
+
+- Add an alias to ``spacing()``: ``text_spacing()``
+- Fix unicode issue in Python 2.x
+
 2.5.6.2 (2015-05-17)
 ++++++++++++++++++++
 

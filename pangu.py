@@ -8,9 +8,8 @@ import sys
 _py_version = sys.version_info
 is_py2 = (_py_version[0] == 2)
 
-__version__ = '2.5.6.2'
-__all__ = ['spacing', ]
-
+__version__ = '2.5.6.3'
+__all__ = ['spacing', 'text_spacing']
 
 CJK_QUOTE_RE = re.compile(r'([\u2e80-\u2eff\u2f00-\u2fdf\u3040-\u309f\u30a0-\u30ff\u3100-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])(["\'])')
 QUOTE_CJK_RE = re.compile(r'(["\'])([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])')
@@ -34,7 +33,7 @@ CJK_ANS_RE = re.compile(r'([\u2e80-\u2eff\u2f00-\u2fdf\u3040-\u309f\u30a0-\u30ff
 ANS_CJK_RE = re.compile(r'([A-Za-z0-9`~\$%\^&\*\-=\+\\\|/!;:,\.\?\u00a1-\u00ff\u2022\u2026\u2027\u2150-\u218f])([\u2e80-\u2eff\u2f00-\u2fdf\u3040-\u309f\u30a0-\u30ff\u3100-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])')
 
 
-def spacing(text):
+def text_spacing(text):
     """
     Perform paranoid text spacing on text. Always return Unicode.
     """
@@ -70,3 +69,6 @@ def spacing(text):
     text = ANS_CJK_RE.sub(r'\1 \2', text)
 
     return text
+
+
+spacing = text_spacing
