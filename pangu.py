@@ -2,7 +2,11 @@
 
 from __future__ import unicode_literals
 import re
+import sys
 
+
+_py_version = sys.version_info
+is_py2 = (_py_version[0] == 2)
 
 __version__ = '2.5.6.2'
 __all__ = ['spacing', ]
@@ -32,8 +36,11 @@ ANS_CJK_RE = re.compile(r'([A-Za-z0-9`~\$%\^&\*\-=\+\\\|/!;:,\.\?\u00a1-\u00ff\u
 
 def spacing(text):
     """
-    Perform paranoid text spacing on text.
+    Perform paranoid text spacing on text. Always return Unicode.
     """
+
+    if is_py2 and isinstance(text, str):
+        text = text.decode('utf-8')
 
     if len(text) < 2:
         return text
