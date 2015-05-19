@@ -7,6 +7,9 @@ pangu
 .. image:: http://img.shields.io/coveralls/vinta/pangu.py/master.svg?style=flat-square
     :target: https://coveralls.io/r/vinta/pangu.py
 
+.. image:: https://landscape.io/github/vinta/pangu.py/master/landscape.svg?style=flat-square
+    :target: https://landscape.io/github/vinta/pangu.py/master
+
 .. image:: http://img.shields.io/pypi/v/pangu.svg?style=flat-square
     :target: https://pypi.python.org/pypi/pangu
 
