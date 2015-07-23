@@ -9,12 +9,13 @@ python:
 
 install:
   - pip install -r requirements_test.txt
+  - pip install codecov
 
 script:
   - coverage run --source=pangu setup.py test
 
 after_success:
-  - coveralls
+  - codecov
 
 notifications:
   email:
