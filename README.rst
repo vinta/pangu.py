@@ -1,5 +1,5 @@
-pangu
-=====
+pangu.py
+========
 
 .. image:: https://img.shields.io/travis/vinta/pangu.py/master.svg?style=flat-square
     :target: https://travis-ci.org/vinta/pangu.py

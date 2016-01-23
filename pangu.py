@@ -79,11 +79,10 @@ def spacing(text):
 
     return new_text
 
+# make an alias
+spacing_text = spacing
+
 
 # TODO
 def spacing_file(path):
     pass
-
-
-# make an alias
-spacing_text = spacing
