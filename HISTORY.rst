@@ -1,6 +1,13 @@
 History
 =======
 
+3.0.0 (2016-01-24)
+++++++++++++++++++
+
+- Support Python 3.5
+- Refactoring
+- Rename ``text_spacing()`` to ``spacing_text()``
+
 2.5.6.3 (2015-05-18)
 ++++++++++++++++++++
 

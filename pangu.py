@@ -3,13 +3,19 @@
 import re
 import sys
 
-from six import u
-
 
 __version__ = '3.0.0'
 __all__ = ['spacing', 'spacing_text']
 
-_is_py2 = (sys.version_info[0] == 2)
+PY2 = (sys.version_info[0] == 2)
+
+# borrow from six
+if PY2:
+    def u(s):
+        return unicode(s.replace(r'\\', r'\\\\'), 'unicode_escape')
+else:
+    def u(s):
+        return s
 
 CJK_QUOTE_RE = re.compile(u(r'([\u2e80-\u2eff\u2f00-\u2fdf\u3040-\u309f\u30a0-\u30ff\u3100-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])(["\'])'))
 QUOTE_CJK_RE = re.compile(u(r'(["\'])([\u3040-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])'))
@@ -41,7 +47,7 @@ def spacing(text):
     new_text = text
 
     # always use unicode
-    if _is_py2 and isinstance(new_text, str):
+    if PY2 and isinstance(new_text, str):
         new_text = new_text.decode('utf-8')
 
     if len(new_text) < 2:

@@ -12,7 +12,7 @@ import pangu
 
 
 if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
+    os.system('python setup.py sdist bdist_wheel upload')
     sys.exit()
 
 long_description = open('README.rst').read() + '\n\n' + open('HISTORY.rst').read()
@@ -39,6 +39,7 @@ setup(
     zip_safe=False,
     classifiers=(
         'Development Status :: 5 - Production/Stable',
+        'Environment :: Console',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
@@ -50,7 +51,6 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
