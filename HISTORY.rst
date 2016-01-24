@@ -22,7 +22,7 @@ History
 2.5.6 (2015-05-17)
 ++++++++++++++++++
 
-- Synchronize version number with `paranoid-auto-spacing <https://github.com/vinta/paranoid-auto-spacing>`_
+- Synchronize version number with `pangu.js <https://github.com/vinta/pangu.js>`_
 - Improve Paranoid Text Spacing algorithm
 
 1.0.0 (2014-02-12)
