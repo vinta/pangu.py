@@ -36,7 +36,7 @@ import sys
 import os
 
 
-__version__ = '3.0.0'
+__version__ = '4.0.0'
 __all__ = ['spacing', 'spacing_text', "spacing_file"]
 
 PY2 = (sys.version_info[0] == 2)
