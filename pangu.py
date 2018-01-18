@@ -1,11 +1,43 @@
+#!/usr/bin/env python
 # coding: utf-8
+"""
+Pangu Automatically insert whitespace between CJK (Chinese, Japanese, Korean) and 
+    half-width characters (alphabetical letters, numerical digits and symbols).
+
+Usage:
+
+In Python Code:
+
+>>> import pangu
+>>> pangu.spacing('门多在github的用户名是menduo，他也有空格强迫症:)')
+# output: u'门多在 github 的用户名是 menduo，他也有空格强迫症:)'
+
+In Terminal:
+
+# text
+$ pangu "门多在github的用户名是menduo，他也有空格强迫症:)"
+# output: 门多在 github 的用户名是 menduo，他也有空格强迫症:)
+
+# file
+$ pangu ~/menduo/pangu.txt
+# output: 门多在 github 的用户名是 menduo，他也有空格强迫症:)。
+
+# stdin, from file
+$ pangu < ~/menduo/pangu.txt
+
+# stdin, from pipeline
+$ echo "门多在github的用户名是menduo，他也有空格强迫症:)" | pangu
+$ echo "门多在github的用户名是menduo，他也有空格强迫症:)" | python -m pangu
+# output: 门多在 github 的用户名是 menduo，他也有空格强迫症:)
+"""
 
 import re
 import sys
+import os
 
 
 __version__ = '3.0.0'
-__all__ = ['spacing', 'spacing_text']
+__all__ = ['spacing', 'spacing_text', "spacing_file"]
 
 PY2 = (sys.version_info[0] == 2)
 
@@ -82,7 +114,66 @@ def spacing(text):
 # make an alias
 spacing_text = spacing
 
-
-# TODO
 def spacing_file(path):
-    pass
+    """
+    spacing from file
+    """
+    with open(path) as f:
+        fdata = f.read()
+    return spacing_text(fdata)
+
+def _is_abs_file(fpath):
+    """
+    check if `fpath` is a abs path and is a file.
+    """
+    return os.path.isabs(fpath) and os.path.isfile(fpath)
+
+def _detect_filepath(src):
+    """detect if src is a file or not, return the abs path or None.
+    """
+    if not src:
+        return None
+    
+    if os.path.isabs(src) and os.path.isfile(src):
+        return src
+    
+    if src.startswith("~"):
+        abspath = os.path.expanduser(src)
+        if _is_abs_file(abspath):
+            return abspath
+    else:
+        currdir = os.path.abspath(os.path.curdir)
+        abspath = os.path.join(currdir, src)
+        if _is_abs_file(abspath):
+            return abspath
+    return None
+
+def _space_file_or_text(src):
+    """convert from file or str
+    """
+    if _detect_filepath(src):
+        greater_text = spacing_file(src)
+    else:
+        greater_text = spacing_text(src)
+    return greater_text
+
+def echo(greater_text):   
+    """echo to standard output
+    """
+    greater_text += "\n"
+    greater_text = greater_text.encode("utf-8")
+    if PY2:
+        sys.stdout.write(greater_text)
+    else:
+        sys.stdout.buffer.write(greater_text)
+
+if __name__ == "__main__":
+    if not sys.stdin.isatty():
+        echo(spacing_text(sys.stdin.read()))
+    elif len(sys.argv) > 1:
+        echo(_space_file_or_text(sys.argv[1]))
+        sys.exit(0)
+    else:
+        print(__doc__)
+        sys.exit(0)
+

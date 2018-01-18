@@ -1,6 +1,14 @@
 History
 =======
 
+4.0.0(2018-01-18)
+++++++++++++++++++
+
+- Support Python 3.6
+- Support ``spacing_file``
+- Add command line tools: ``pangu.py``、``pangu``、``pangupy``
+- Add more doc
+
 3.0.0 (2016-01-24)
 ++++++++++++++++++
 
