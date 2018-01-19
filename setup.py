@@ -17,9 +17,6 @@ if sys.argv[-1] == 'publish':
 
 long_description = open('README.rst').read() + '\n\n' + open('HISTORY.rst').read()
 
-requirements_lines = [line.strip() for line in open('requirements.txt').readlines()]
-install_requires = list(filter(None, requirements_lines))
-
 setup(
     name='pangu',
     version=pangu.__version__,
@@ -30,10 +27,9 @@ setup(
     author_email='vinta.chen@gmail.com',
     url='https://github.com/vinta/pangu.py',
     license='MIT',
-    install_requires=install_requires,
     include_package_data=True,
     py_modules=['pangu', ],
-    scripts=["pangu", "pangupy", "pangu.py"],
+    scripts=['bin/pangu', ],
     test_suite='test_pangu',
     zip_safe=False,
     classifiers=(
