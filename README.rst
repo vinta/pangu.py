@@ -20,7 +20,7 @@ Paranoid text spacing for good readability, to automatically insert whitespace b
 
 - `pangu.go <https://github.com/vinta/pangu>`_ (Go)
 - `pangu.java <https://github.com/vinta/pangu.java>`_ (Java)
-- `pangu.js <https://github.com/vinta/pangu.js>`_ (JavaScript, both Node.js and Browser)
+- `pangu.js <https://github.com/vinta/pangu.js>`_ (JavaScript)
 - `pangu.objective-c <https://github.com/Cee/pangu.objective-c>`_ (Objective-C)
 - `pangu.php <https://github.com/Kunr/pangu.php>`_ (PHP)
 - `pangu.py <https://github.com/vinta/pangu.py>`_ (Python)
@@ -43,34 +43,29 @@ In Python code
 
     import pangu
 
-    pangu.spacing('新八的構造成分有95%是眼鏡、3%是水、2%是垃圾')
-    # output: u'新八的構造成分有 95% 是眼鏡、3% 是水、2% 是垃圾'
+    pangu.spacing_text('當你凝視著bug，bug也凝視著你')
+    # output: '當你凝視著 bug，bug 也凝視著你'
 
-    pangu.spacing_text("Mr.龍島主道：「Let's Party!各位高明博雅君子！」")
-    # output: u"Mr. 龍島主道：「Let's Party! 各位高明博雅君子！」"
-
-``spacing_text()`` is an alias of ``spacing()``.
-
+    pangu.spacing_file('path/to/file.txt')
+    # output: '與 PM 戰鬥的人，應當小心自己不要成為 PM'
 
 In Terminal
 -----------
 
-There're three command line tools: ``pangu.py``、``pangu``、``pangupy``. Both ``pangu``、``pangupy`` are the alias of ``pangu.py``.
-
 .. code-block:: bash
 
-    # text
-    $ pangu "门多在github的用户名是menduo，他也有空格强迫症:)"
-    # output: 门多在 github 的用户名是 menduo，他也有空格强迫症:)
+    $ pangu "請使用uname -m指令來檢查你的Linux作業系統是32位元或是[敏感词已被屏蔽]位元"
+    # output: "請使用 uname -m 指令來檢查你的 Linux 作業系統是 32 位元或是 [敏感词已被屏蔽] 位元"
 
-    # file
-    $ pangu ~/menduo/pangu.txt
-    # output: 门多在 github 的用户名是 menduo，他也有空格强迫症:)。
+    $ python -m pangu "為什麼小明有問題都不Google？因為他有Bing"
+    # output: 為什麼小明有問題都不 Google？因為他有 Bing
 
-    # stdin, from file
-    $ pangu < ~/menduo/pangu.txt
+    $ echo "未來的某一天，Gmail配備的AI可能會得出一個結論：想要消滅垃圾郵件最好的辦法就是消滅人類" >> path/to/file.txt
+    $ pangu path/to/file.txt
+    # output: "未來的某一天，Gmail 配備的 AI 可能會得出一個結論：想要消滅垃圾郵件最好的辦法就是消滅人類"
 
-    # stdin, from pipeline
-    $ echo "门多在github的用户名是menduo，他也有空格强迫症:)" | pangu
-    $ echo "门多在github的用户名是menduo，他也有空格强迫症:)" | python -m pangu
-    # output: 门多在 github 的用户名是 menduo，他也有空格强迫症:)
+    $ echo "心裡想的是Microservice，手裡做的是Distributed Monolith" | pangu
+    # output: "心裡想的是 Microservice，手裡做的是 Distributed Monolith"
+
+    $ echo "你從什麼時候開始產生了我沒使用Monkey Patch的錯覺？" | python -m pangu
+    # output: "你從什麼時候開始產生了我沒使用 Monkey Patch 的錯覺？"
