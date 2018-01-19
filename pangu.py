@@ -1,50 +1,33 @@
 #!/usr/bin/env python
 # coding: utf-8
 """
-Pangu Automatically insert whitespace between CJK (Chinese, Japanese, Korean) and 
-    half-width characters (alphabetical letters, numerical digits and symbols).
-
-Usage:
-
-In Python Code:
+Paranoid text spacing for good readability, to automatically insert whitespace
+between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical
+letters, numerical digits and symbols).
 
 >>> import pangu
->>> pangu.spacing('门多在github的用户名是menduo，他也有空格强迫症:)')
-# output: u'门多在 github 的用户名是 menduo，他也有空格强迫症:)'
-
-In Terminal:
-
-# text
-$ pangu "门多在github的用户名是menduo，他也有空格强迫症:)"
-# output: 门多在 github 的用户名是 menduo，他也有空格强迫症:)
-
-# file
-$ pangu ~/menduo/pangu.txt
-# output: 门多在 github 的用户名是 menduo，他也有空格强迫症:)。
-
-# stdin, from file
-$ pangu < ~/menduo/pangu.txt
-
-# stdin, from pipeline
-$ echo "门多在github的用户名是menduo，他也有空格强迫症:)" | pangu
-$ echo "门多在github的用户名是menduo，他也有空格强迫症:)" | python -m pangu
-# output: 门多在 github 的用户名是 menduo，他也有空格强迫症:)
+>>> pangu.spacing_text('當你凝視著bug，bug也凝視著你')
+>>> # output: '當你凝視著 bug，bug 也凝視著你'
+>>> pangu.spacing_file('path/to/file.txt')
+>>> # output: '與 PM 戰鬥的人，應當小心自己不要成為 PM'
 """
 
+from __future__ import print_function
+
+import argparse
+import os
 import re
 import sys
-import os
 
 
-__version__ = '4.0.0'
-__all__ = ['spacing', 'spacing_text', "spacing_file"]
+__version__ = '3.3.0'
+__all__ = ['spacing', 'spacing_text', 'spacing_file', 'PanguCLI']
 
 PY2 = (sys.version_info[0] == 2)
 
-# borrow from six
 if PY2:
     def u(s):
-        return unicode(s.replace(r'\\', r'\\\\'), 'unicode_escape')
+        return unicode(s.replace(r'\\', r'\\\\'), 'unicode_escape')  # noqa: F821
 else:
     def u(s):
         return s
@@ -71,11 +54,10 @@ CJK_ANS_RE = re.compile(u(r'([\u2e80-\u2eff\u2f00-\u2fdf\u3040-\u309f\u30a0-\u30
 ANS_CJK_RE = re.compile(u(r'([A-Za-z0-9`~\$%\^&\*\-=\+\\\|/!;:,\.\?\u00a1-\u00ff\u2022\u2026\u2027\u2150-\u218f])([\u2e80-\u2eff\u2f00-\u2fdf\u3040-\u309f\u30a0-\u30ff\u3100-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff])'))
 
 
-def spacing(text):
+def spacing_text(text):
     """
-    Perform paranoid text spacing on text. Always return unicode.
+    Perform paranoid text spacing on text.
     """
-
     new_text = text
 
     # always use unicode
@@ -109,34 +91,35 @@ def spacing(text):
     new_text = CJK_ANS_RE.sub(r'\1 \2', new_text)
     new_text = ANS_CJK_RE.sub(r'\1 \2', new_text)
 
-    return new_text
+    return new_text.strip()
 
-# make an alias
-spacing_text = spacing
 
 def spacing_file(path):
     """
-    spacing from file
+    Perform paranoid text spacing from file.
     """
-    with open(path) as f:
+    with open(os.path.abspath(path)) as f:
         fdata = f.read()
     return spacing_text(fdata)
 
+
 def _is_abs_file(fpath):
     """
-    check if `fpath` is a abs path and is a file.
+    Check if `fpath` is a abs path and is a file.
     """
     return os.path.isabs(fpath) and os.path.isfile(fpath)
 
+
 def _detect_filepath(src):
-    """detect if src is a file or not, return the abs path or None.
+    """
+    Detect if src is a file or not, return the abs path or None.
     """
     if not src:
         return None
-    
+
     if os.path.isabs(src) and os.path.isfile(src):
         return src
-    
+
     if src.startswith("~"):
         abspath = os.path.expanduser(src)
         if _is_abs_file(abspath):
@@ -148,32 +131,43 @@ def _detect_filepath(src):
             return abspath
     return None
 
-def _space_file_or_text(src):
-    """convert from file or str
+
+def spacing(path_or_text):
     """
-    if _detect_filepath(src):
-        greater_text = spacing_file(src)
+    Perform paranoid text spacing.
+    """
+    if _detect_filepath(path_or_text):
+        greater_text = spacing_file(path_or_text)
     else:
-        greater_text = spacing_text(src)
+        greater_text = spacing_text(path_or_text)
     return greater_text
 
-def echo(greater_text):   
-    """echo to standard output
-    """
-    greater_text += "\n"
-    greater_text = greater_text.encode("utf-8")
-    if PY2:
-        sys.stdout.write(greater_text)
-    else:
-        sys.stdout.buffer.write(greater_text)
 
-if __name__ == "__main__":
-    if not sys.stdin.isatty():
-        echo(spacing_text(sys.stdin.read()))
-    elif len(sys.argv) > 1:
-        echo(_space_file_or_text(sys.argv[1]))
-        sys.exit(0)
-    else:
-        print(__doc__)
+class PanguCLI(object):
+
+    def __init__(self):
+        parser = argparse.ArgumentParser(
+            prog='pangu',
+            description='paranoid text spacing',
+        )
+        self.parser = parser
+        self.parser.add_argument('-v', '--version', action='version', version=__version__)
+        self.parser.add_argument('text_or_path', action='store', type=str)
+
+        # TODO: be explicit
+        # pangu "text"
+        # pangu -f path/to/file.txt
+
+    def parse(self):
+        if not sys.stdin.isatty():
+            print(spacing_text(sys.stdin.read()))  # noqa: T003
+        elif len(sys.argv) > 1:
+            namespace = self.parser.parse_args()
+            print(spacing(namespace.text_or_path))  # noqa: T003
+        else:
+            self.parser.print_help()
         sys.exit(0)
 
+
+if __name__ == '__main__':
+    PanguCLI().parse()
