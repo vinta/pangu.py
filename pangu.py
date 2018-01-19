@@ -23,9 +23,9 @@ import sys
 __version__ = '3.3.0'
 __all__ = ['spacing', 'spacing_text', 'spacing_file', 'PanguCLI']
 
-PY2 = (sys.version_info[0] == 2)
+IS_PY2 = (sys.version_info[0] == 2)
 
-if PY2:
+if IS_PY2:
     def u(s):
         return unicode(s.replace(r'\\', r'\\\\'), 'unicode_escape')  # noqa: F821
 else:
@@ -61,7 +61,7 @@ def spacing_text(text):
     new_text = text
 
     # always use unicode
-    if PY2 and isinstance(new_text, str):
+    if IS_PY2 and isinstance(new_text, str):
         new_text = new_text.decode('utf-8')
 
     if len(new_text) < 2:
