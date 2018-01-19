@@ -31,10 +31,13 @@ Installation
 
 .. code-block:: bash
 
-    $ pip install pangu
+    $ pip install -U pangu
 
 Usage
 =====
+
+In Python code
+--------------
 
 .. code-block:: py
 
@@ -47,3 +50,27 @@ Usage
     # output: u"Mr. 龍島主道：「Let's Party! 各位高明博雅君子！」"
 
 ``spacing_text()`` is an alias of ``spacing()``.
+
+
+In Terminal
+-----------
+
+There're three command line tools: ``pangu.py``、``pangu``、``pangupy``. Both ``pangu``、``pangupy`` are the alias of ``pangu.py``.
+
+.. code-block:: bash
+
+    # text
+    $ pangu "门多在github的用户名是menduo，他也有空格强迫症:)"
+    # output: 门多在 github 的用户名是 menduo，他也有空格强迫症:)
+
+    # file
+    $ pangu ~/menduo/pangu.txt
+    # output: 门多在 github 的用户名是 menduo，他也有空格强迫症:)。
+
+    # stdin, from file
+    $ pangu < ~/menduo/pangu.txt
+
+    # stdin, from pipeline
+    $ echo "门多在github的用户名是menduo，他也有空格强迫症:)" | pangu
+    $ echo "门多在github的用户名是menduo，他也有空格强迫症:)" | python -m pangu
+    # output: 门多在 github 的用户名是 menduo，他也有空格强迫症:)

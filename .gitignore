@@ -7,6 +7,11 @@ build
 sdist
 
 .coverage
+.vscode/
+.idea/
 htmlcov/
 
 .DS_STORE
+
+_ignored/
+__pycache__/
