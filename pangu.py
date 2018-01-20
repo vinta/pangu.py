@@ -20,7 +20,7 @@ import re
 import sys
 
 
-__version__ = '3.3.0'
+__version__ = '3.3.1'
 __all__ = ['spacing', 'spacing_text', 'spacing_file', 'PanguCLI']
 
 IS_PY2 = (sys.version_info[0] == 2)
