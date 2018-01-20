@@ -58,7 +58,7 @@ In Terminal
     # output: 為什麼小明有問題都不 Google？因為他有 Bing
 
     $ echo "未來的某一天，Gmail配備的AI可能會得出一個結論：想要消滅垃圾郵件最好的辦法就是消滅人類" >> path/to/file.txt
-    $ pangu path/to/file.txt
+    $ pangu -f path/to/file.txt
     # output: "未來的某一天，Gmail 配備的 AI 可能會得出一個結論：想要消滅垃圾郵件最好的辦法就是消滅人類"
 
     $ echo "心裡想的是Microservice，手裡做的是Distributed Monolith" | pangu

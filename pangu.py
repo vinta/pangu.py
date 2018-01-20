@@ -7,9 +7,9 @@ letters, numerical digits and symbols).
 
 >>> import pangu
 >>> pangu.spacing_text('當你凝視著bug，bug也凝視著你')
->>> # output: '當你凝視著 bug，bug 也凝視著你'
+'當你凝視著 bug，bug 也凝視著你'
 >>> pangu.spacing_file('path/to/file.txt')
->>> # output: '與 PM 戰鬥的人，應當小心自己不要成為 PM'
+'與 PM 戰鬥的人，應當小心自己不要成為 PM'
 """
 
 from __future__ import print_function
@@ -103,70 +103,39 @@ def spacing_file(path):
     return spacing_text(fdata)
 
 
-def _is_abs_file(fpath):
+def spacing(text_or_path):
     """
-    Check if `fpath` is a abs path and is a file.
+    Perform paranoid text spacing, might cause ambiguous results.
     """
-    return os.path.isabs(fpath) and os.path.isfile(fpath)
-
-
-def _detect_filepath(src):
-    """
-    Detect if src is a file or not, return the abs path or None.
-    """
-    if not src:
-        return None
-
-    if os.path.isabs(src) and os.path.isfile(src):
-        return src
-
-    if src.startswith("~"):
-        abspath = os.path.expanduser(src)
-        if _is_abs_file(abspath):
-            return abspath
+    if os.path.isfile(os.path.abspath(text_or_path)):
+        new_text = spacing_file(text_or_path)
     else:
-        currdir = os.path.abspath(os.path.curdir)
-        abspath = os.path.join(currdir, src)
-        if _is_abs_file(abspath):
-            return abspath
-    return None
-
-
-def spacing(path_or_text):
-    """
-    Perform paranoid text spacing.
-    """
-    if _detect_filepath(path_or_text):
-        greater_text = spacing_file(path_or_text)
-    else:
-        greater_text = spacing_text(path_or_text)
-    return greater_text
+        new_text = spacing_text(text_or_path)
+    return new_text
 
 
 class PanguCLI(object):
 
     def __init__(self):
-        parser = argparse.ArgumentParser(
+        self.parser = argparse.ArgumentParser(
             prog='pangu',
-            description='paranoid text spacing',
+            description='Paranoid text spacing for good readability, to automatically insert whitespace between CJK and half-width characters.',
         )
-        self.parser = parser
         self.parser.add_argument('-v', '--version', action='version', version=__version__)
-        self.parser.add_argument('text_or_path', action='store', type=str)
-
-        # TODO: be explicit
-        # pangu "text"
-        # pangu -f path/to/file.txt
+        self.parser.add_argument('-f', '--file', action='store_true', dest='is_file', required=False, help='specify whether input value is text or file path')
+        self.parser.add_argument('text_or_path', action='store', type=str, help='text or file path to perform spacing')
 
     def parse(self):
         if not sys.stdin.isatty():
             print(spacing_text(sys.stdin.read()))  # noqa: T003
         elif len(sys.argv) > 1:
-            namespace = self.parser.parse_args()
-            print(spacing(namespace.text_or_path))  # noqa: T003
+            args = self.parser.parse_args()
+            if args.is_file:
+                print(spacing_file(args.text_or_path))  # noqa: T003
+            else:
+                print(spacing_text(args.text_or_path))  # noqa: T003
         else:
             self.parser.print_help()
-        sys.exit(0)
 
 
 if __name__ == '__main__':
