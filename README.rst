@@ -14,7 +14,7 @@ pangu.py
     :target: https://pypi.python.org/pypi/pangu
 
 .. image:: https://img.shields.io/badge/made%20with-%e2%9d%a4-ff69b4.svg?style=flat-square
-    :target: https://vinta.ws
+    :target: https://vinta.ws/code/
 
 Paranoid text spacing for good readability, to automatically insert whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).
 
@@ -22,6 +22,7 @@ Paranoid text spacing for good readability, to automatically insert whitespace b
 - `pangu.java <https://github.com/vinta/pangu.java>`_ (Java)
 - `pangu.js <https://github.com/vinta/pangu.js>`_ (JavaScript)
 - `pangu.py <https://github.com/vinta/pangu.py>`_ (Python)
+- `pangu.space <https://github.com/vinta/pangu.space>`_ (Web API)
 
 Installation
 ============
