@@ -3,22 +3,18 @@
 
 import os
 import sys
+import re
 
 from setuptools import setup
 
+_VERSION_RE = re.compile(r"__version__\s*?=\s*?'(.*?)'", flags=re.M)
+
 
 def get_version():
-    code = None
     path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        'pangu.py',
-    )
+        os.path.dirname(os.path.abspath(__file__)), 'pangu.py')
     with open(path) as f:
-        for line in f:
-            if line.startswith('__version__'):
-                code = line[len('__version__ = '):]
-                break
-    return eval(code)
+        return _VERSION_RE.findall(f.read())[-1]
 
 
 if sys.argv[-1] == 'wheel':
@@ -33,8 +29,6 @@ if sys.argv[-1] == 'publish':
     os.system('twine upload dist/*')
     sys.exit(0)
 
-long_description = open('README.rst').read() + '\n' + open('HISTORY.rst').read()
-
 setup(
     name='pangu',
     version=get_version(),
@@ -42,7 +36,8 @@ setup(
                 'to automatically insert whitespace between CJK '
                 '(Chinese, Japanese, Korean) and half-width characters '
                 '(alphabetical letters, numerical digits and symbols).',
-    long_description=long_description,
+    long_description=open(
+        'README.rst').read() + '\n' + open('HISTORY.rst').read(),
     keywords='pangu space white text spacing readability',
     author='Vinta Chen',
     author_email='vinta.chen@gmail.com',
@@ -51,7 +46,7 @@ setup(
     include_package_data=True,
     py_modules=['pangu'],
     test_suite='test_pangu',
-    entry_points = {
+    entry_points={
         'console_scripts': ['pangu=pangu:main'],
     },
     zip_safe=False,
