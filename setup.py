@@ -38,7 +38,10 @@ long_description = open('README.rst').read() + '\n' + open('HISTORY.rst').read()
 setup(
     name='pangu',
     version=get_version(),
-    description='Paranoid text spacing for good readability, to automatically insert whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).',
+    description='Paranoid text spacing for good readability, '
+                'to automatically insert whitespace between CJK '
+                '(Chinese, Japanese, Korean) and half-width characters '
+                '(alphabetical letters, numerical digits and symbols).',
     long_description=long_description,
     keywords='pangu space white text spacing readability',
     author='Vinta Chen',
@@ -46,9 +49,11 @@ setup(
     url='https://github.com/vinta/pangu.py',
     license='MIT',
     include_package_data=True,
-    py_modules=['pangu', ],
-    scripts=['bin/pangu', ],
+    py_modules=['pangu'],
     test_suite='test_pangu',
+    entry_points = {
+        'console_scripts': ['pangu=pangu:main'],
+    },
     zip_safe=False,
     classifiers=(
         'Development Status :: 5 - Production/Stable',

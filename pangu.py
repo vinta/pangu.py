@@ -21,7 +21,7 @@ import sys
 
 
 __version__ = '3.3.0.1'
-__all__ = ['spacing_text', 'spacing_file', 'spacing', 'PanguCLI']
+__all__ = ['spacing_text', 'spacing_file', 'spacing', 'main']
 
 IS_PY2 = (sys.version_info[0] == 2)
 
@@ -114,29 +114,31 @@ def spacing(text_or_path):
     return new_text
 
 
-class PanguCLI(object):
+def main(args=sys.argv[1:]):
+    parser = argparse.ArgumentParser(
+        prog='pangu',
+        description='Paranoid text spacing for good readability, '
+                    'to automatically insert whitespace between '
+                    'CJK and half-width characters.',
+    )
+    parser.add_argument(
+        '-v', '--version', action='version', version=__version__)
+    parser.add_argument(
+        '-f', '--file', action='store_true', dest='is_file', required=False,
+        help='specify whether input value is text or file path')
+    parser.add_argument(
+        'target', action='store', type=str,
+        help='text or file path to perform spacing')
 
-    def __init__(self):
-        self.parser = argparse.ArgumentParser(
-            prog='pangu',
-            description='Paranoid text spacing for good readability, to automatically insert whitespace between CJK and half-width characters.',
-        )
-        self.parser.add_argument('-v', '--version', action='version', version=__version__)
-        self.parser.add_argument('-f', '--file', action='store_true', dest='is_file', required=False, help='specify whether input value is text or file path')
-        self.parser.add_argument('text_or_path', action='store', type=str, help='text or file path to perform spacing')
-
-    def parse(self):
-        if not sys.stdin.isatty():
-            print(spacing_text(sys.stdin.read()))  # noqa: T003
-        elif len(sys.argv) > 1:
-            args = self.parser.parse_args()
-            if args.is_file:
-                print(spacing_file(args.text_or_path))  # noqa: T003
-            else:
-                print(spacing_text(args.text_or_path))  # noqa: T003
+    if not sys.stdin.isatty():
+        print(spacing_text(sys.stdin.read()))  # noqa: T003
+    else:
+        args = parser.parse_args(args)
+        if args.is_file:
+            print(spacing_file(args.target))  # noqa: T003
         else:
-            self.parser.print_help()
+            print(spacing_text(args.target))  # noqa: T003
 
 
 if __name__ == '__main__':
-    PanguCLI().parse()
+    main()
