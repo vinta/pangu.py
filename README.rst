@@ -8,10 +8,10 @@ pangu.py
     :target: https://codecov.io/github/vinta/pangu.py
 
 .. image:: https://img.shields.io/pypi/v/pangu.svg?style=flat-square
-    :target: https://pypi.python.org/pypi/pangu
+    :target: https://pypi.org/project/pangu/
 
 .. image:: https://img.shields.io/pypi/pyversions/pangu.svg?style=flat-square
-    :target: https://pypi.python.org/pypi/pangu
+    :target: https://pypi.org/project/pangu/
 
 .. image:: https://img.shields.io/badge/made%20with-%e2%9d%a4-ff69b4.svg?style=flat-square
     :target: https://vinta.ws/code/
