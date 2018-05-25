@@ -6,7 +6,6 @@ import pangu
 
 
 class PanguTestCase(unittest.TestCase):
-
     def test_spacing(self):
         self.assertEqual(pangu.spacing('新八的構造成分有95%是眼鏡、3%是水、2%是垃圾'), u'新八的構造成分有 95% 是眼鏡、3% 是水、2% 是垃圾')
         self.assertEqual(pangu.spacing(u'新八的構造成分有95%是眼鏡、3%是水、2%是垃圾'), u'新八的構造成分有 95% 是眼鏡、3% 是水、2% 是垃圾')

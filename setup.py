@@ -2,7 +2,6 @@
 # coding: utf-8
 
 import os
-import sys
 import re
 
 from setuptools import setup
@@ -16,18 +15,6 @@ def get_version():
     with open(path) as f:
         return _VERSION_RE.findall(f.read())[-1]
 
-
-if sys.argv[-1] == 'wheel':
-    os.system('make clean')
-    os.system('pip install wheel')
-    os.system('python setup.py bdist_wheel')
-    sys.exit(0)
-
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py wheel')
-    os.system('pip install twine')
-    os.system('twine upload dist/*')
-    sys.exit(0)
 
 setup(
     name='pangu',

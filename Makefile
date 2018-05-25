@@ -6,7 +6,12 @@ clean:
 	rm -rf pangu.egg-info/
 
 debug:
-	python setup.py develop
+	pip install --editable .
 
-publish:
-	python setup.py publish
+pkg: clean
+	pip install wheel -U
+	python setup.py bdist_wheel sdist
+
+publish: pkg
+	pip install twine -U
+	twine upload dist/*
