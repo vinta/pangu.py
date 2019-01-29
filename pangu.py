@@ -111,18 +111,18 @@ def spacing(text_or_path):
 def main(args=sys.argv[1:]):
     parser = argparse.ArgumentParser(
         prog='pangu',
-        description='Paranoid text spacing for good readability, '
+        description='pangu.py -- Paranoid text spacing for good readability, '
                     'to automatically insert whitespace between '
-                    'CJK and half-width characters.',
+                    'CJK and half-width characters (alphabetical letters, numerical digits and symbols).',
     )
     parser.add_argument(
         '-v', '--version', action='version', version=__version__)
     parser.add_argument(
         '-f', '--file', action='store_true', dest='is_file', required=False,
-        help='specify whether input value is text or file path')
+        help='specify the input value is a file path')
     parser.add_argument(
         'target', action='store', type=str,
-        help='text or file path to perform spacing')
+        help='the text or file path to perform spacing')
 
     if not sys.stdin.isatty():
         print(spacing_text(sys.stdin.read()))  # noqa: T003
