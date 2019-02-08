@@ -1,11 +1,12 @@
 History
 =======
 
-4.0.6 (2019-02-09)
-------------------
+4.0.6.1 (2019-02-09)
+--------------------
 
-- Support Python 3.7
 - Implement **Paranoid Text Spacing algorithm** v4
+- Support Python 3.7
+- Drop Python 2.7 support
 
 3.3.0.1 (2018-01-20)
 --------------------

@@ -19,7 +19,7 @@ import os
 import re
 import sys
 
-__version__ = '4.0.6'
+__version__ = '4.0.6.1'
 __all__ = ['spacing_text', 'spacing_file', 'spacing', 'cli']
 
 CJK = r'\u2e80-\u2eff\u2f00-\u2fdf\u3040-\u309f\u30a0-\u30fa\u30fc-\u30ff\u3100-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff'
