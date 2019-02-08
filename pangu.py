@@ -38,7 +38,7 @@ CJK = r'\u2e80-\u2eff\u2f00-\u2fdf\u3040-\u309f\u30a0-\u30fa\u30fc-\u30ff\u3100-
 
 ANY_CJK = re.compile(u(r'[{CJK}]'.format(CJK=CJK)))
 
-CONVERT_TO_FULLWIDTH_CJK_SYMBOLS_CJK = re.compile(u('([{CJK}])[ ]*([\\:]+|\\.)[ ]*([{CJK}])'.format(CJK=CJK)))
+CONVERT_TO_FULLWIDTH_CJK_SYMBOLS_CJK = re.compile(u('([{CJK}])([ ]*(?:[\\:]+|\\.)[ ]*)([{CJK}])'.format(CJK=CJK)))  # there is an extra non-capturing group compared to JavaScript version
 CONVERT_TO_FULLWIDTH_CJK_SYMBOLS = re.compile(u('([{CJK}])[ ]*([~\\!;,\\?]+)[ ]*'.format(CJK=CJK)))
 DOTS_CJK = re.compile(u('([\\.]{{2,}}|\u2026)([{CJK}])'.format(CJK=CJK)))  # need to escape {}
 FIX_CJK_COLON_ANS = re.compile(u('([{CJK}])\\:([A-Z0-9\\(\\)])'.format(CJK=CJK)))
@@ -126,13 +126,7 @@ def spacing(text):
     matched = CONVERT_TO_FULLWIDTH_CJK_SYMBOLS_CJK.search(new_text)
     while matched:
         start, end = matched.span()
-        print(matched.groups())
-        print(matched.span())
-        print(1, new_text[:start + 1].strip())
-        print(2, convert_to_fullwidth(new_text[start + 1:end]))
-        print(3, new_text[end:].strip())
-        new_text = u('').join((new_text[:start + 1].strip(), convert_to_fullwidth(new_text[start + 1:end]), new_text[end:].strip()))
-        print(4, new_text)
+        new_text = u('').join((new_text[:start + 1], convert_to_fullwidth(new_text[start + 1:end - 1]), new_text[end - 1:]))
         matched = CONVERT_TO_FULLWIDTH_CJK_SYMBOLS_CJK.search(new_text)
 
     matched = CONVERT_TO_FULLWIDTH_CJK_SYMBOLS.search(new_text)
