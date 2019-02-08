@@ -106,33 +106,30 @@ def spacing(text_or_path):
         return spacing_file(text_or_path)
     else:
         return spacing_text(text_or_path)
+def cli(args=None):
+    if not args:
+        args = sys.argv[1:]
 
-
-def main(args=sys.argv[1:]):
     parser = argparse.ArgumentParser(
         prog='pangu',
-        description='pangu.py -- Paranoid text spacing for good readability, '
-                    'to automatically insert whitespace between '
-                    'CJK and half-width characters (alphabetical letters, numerical digits and symbols).',
+        description='pangu.py -- Paranoid text spacing for good readability, to automatically insert whitespace between CJK and half-width characters (alphabetical letters, numerical digits and symbols).',
     )
-    parser.add_argument(
-        '-v', '--version', action='version', version=__version__)
-    parser.add_argument(
-        '-f', '--file', action='store_true', dest='is_file', required=False,
-        help='specify the input value is a file path')
-    parser.add_argument(
-        'target', action='store', type=str,
-        help='the text or file path to perform spacing')
+    parser.add_argument('-v', '--version', action='version', version=__version__)
+    parser.add_argument('-t', '--text', action='store_true', dest='is_text', required=False, help='specify the input value is a text')
+    parser.add_argument('-f', '--file', action='store_true', dest='is_file', required=False, help='specify the input value is a file path')
+    parser.add_argument('text_or_path', action='store', type=str, help='the text or file path to apply spacing')
 
     if not sys.stdin.isatty():
         print(spacing_text(sys.stdin.read()))  # noqa: T003
     else:
         args = parser.parse_args(args)
-        if args.is_file:
-            print(spacing_file(args.target))  # noqa: T003
+        if args.is_text:
+            print(spacing_text(args.text_or_path))  # noqa: T003
+        elif args.is_file:
+            print(spacing_file(args.text_or_path))  # noqa: T003
         else:
-            print(spacing_text(args.target))  # noqa: T003
+            print(spacing_text(args.text_or_path))  # noqa: T003
 
 
 if __name__ == '__main__':
-    main()
+    cli()

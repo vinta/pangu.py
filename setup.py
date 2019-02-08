@@ -34,7 +34,7 @@ setup(
     py_modules=['pangu'],
     test_suite='test_pangu',
     entry_points={
-        'console_scripts': ['pangu=pangu:main'],
+        'console_scripts': ['pangu=pangu:cli'],
     },
     zip_safe=False,
     classifiers=(
