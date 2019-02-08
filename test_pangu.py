@@ -354,12 +354,10 @@ class SpacingTextTest(PanguTest):
         self.assertEqual(pangu.spacing_text('請使用uname -m指令來檢查你的Linux作業系統是32位元或是[敏感词已被屏蔽]位元'), '請使用 uname -m 指令來檢查你的 Linux 作業系統是 32 位元或是 [敏感词已被屏蔽] 位元')
 
 
-# class SpacingFileTest(PanguTest):
+class SpacingFileTest(PanguTest):
 
-#     def test_spacing_file(self):
-#         new_content = 1
-#         expected_content = 2
-#         self.assertEqual(pangu.spacing_file('123'), '123')
+    def test_spacing_file(self):
+        self.assertEqual(pangu.spacing_file('./fixtures/test_file.txt'), '老婆餅裡面沒有老婆，JavaScript 裡面也沒有 Java')
 
 
 if __name__ == '__main__':
