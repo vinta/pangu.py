@@ -52,8 +52,8 @@ FIX_SLASH_AS_SLASH = re.compile(r'([/\.])([A-Za-z\-_\./]+) ([/])')
 CJK_LEFT_BRACKET = re.compile('([{CJK}])([\\(\\[\\{{<>\u201c])'.format(CJK=CJK))  # need to escape {
 RIGHT_BRACKET_CJK = re.compile('([\\)\\]\\}}<>\u201d])([{CJK}])'.format(CJK=CJK))  # need to escape }
 FIX_LEFT_BRACKET_ANY_RIGHT_BRACKET = re.compile(r'([\(\[\{<\u201c]+)(\s*)(.+?)(\s*)([\)\]\}>\u201d]+)')  # need to escape { }
-ANS_CJK_LEFT_BRACKET_ANY_RIGHT_BRACKET = re.compile('([A-Za-z0-9{CJK}])[ ]*([\u201c])([A-Za-z0-9{CJK}\\-_ ]+)([\u201d])').format(CJK=CJK)
-LEFT_BRACKET_ANY_RIGHT_BRACKET_ANS_CJK = re.compile('([\u201c])([A-Za-z0-9{CJK}\\-_ ]+)([\u201d])[ ]*([A-Za-z0-9{CJK}])').format(CJK=CJK)
+ANS_CJK_LEFT_BRACKET_ANY_RIGHT_BRACKET = re.compile('([A-Za-z0-9{CJK}])[ ]*([\u201c])([A-Za-z0-9{CJK}\\-_ ]+)([\u201d])'.format(CJK=CJK))
+LEFT_BRACKET_ANY_RIGHT_BRACKET_ANS_CJK = re.compile('([\u201c])([A-Za-z0-9{CJK}\\-_ ]+)([\u201d])[ ]*([A-Za-z0-9{CJK}])'.format(CJK=CJK))
 
 AN_LEFT_BRACKET = re.compile(r'([A-Za-z0-9])([\(\[\{])')
 RIGHT_BRACKET_AN = re.compile(r'([\)\]\}])([A-Za-z0-9])')
@@ -76,13 +76,13 @@ QUESTION_MARKS = re.compile(r'\?+')
 
 
 def convert_to_fullwidth(symbols):
-    symbols = TILDES.sub('～'), symbols
-    symbols = EXCLAMATION_MARKS.sub('！'), symbols
-    symbols = SEMICOLONS.sub('；'), symbols
-    symbols = COLONS.sub('：'), symbols
-    symbols = COMMAS.sub('，'), symbols
-    symbols = PERIODS.sub('。'), symbols
-    symbols = QUESTION_MARKS.sub('？'), symbols
+    symbols = TILDES.sub('～', symbols)
+    symbols = EXCLAMATION_MARKS.sub('！', symbols)
+    symbols = SEMICOLONS.sub('；', symbols)
+    symbols = COLONS.sub('：', symbols)
+    symbols = COMMAS.sub('，', symbols)
+    symbols = PERIODS.sub('。', symbols)
+    symbols = QUESTION_MARKS.sub('？', symbols)
     return symbols.strip()
 
 
@@ -90,10 +90,6 @@ def spacing(text):
     """
     Perform paranoid text spacing on text.
     """
-    # always use unicode
-    if IS_PY2 and isinstance(text, str):
-        text = text.decode('utf-8')
-
     if len(text) <= 1 or not ANY_CJK.search(text):
         return text
 
@@ -146,7 +142,7 @@ def spacing(text):
 
     new_text = S_A.sub(r'\1 \2', new_text)
 
-    new_text = MIDDLE_DOT.sub('・'), new_text
+    new_text = MIDDLE_DOT.sub('・', new_text)
 
     return new_text.strip()
 
