@@ -1,6 +1,12 @@
 History
 =======
 
+4.0.6 (2019-02-09)
+------------------
+
+- Support Python 3.7
+- Implement **Paranoid Text Spacing algorithm** v4
+
 3.3.0.1 (2018-01-20)
 --------------------
 
@@ -30,7 +36,7 @@ History
 ------------------
 
 - Synchronize version number with `pangu.js <https://github.com/vinta/pangu.js>`_
-- Improve Paranoid Text Spacing algorithm
+- Improve **Paranoid Text Spacing algorithm**
 
 1.0.0 (2014-02-12)
 ------------------
