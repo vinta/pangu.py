@@ -21,7 +21,7 @@ setup(
     version=get_version(),
     description='Paranoid text spacing for good readability, to automatically insert whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).',
     long_description=open('README.rst').read() + '\n' + open('HISTORY.rst').read(),
-    keywords='chinese file japanese korean obsessive-compulsive-disorder ocd pangu paranoia paranoid readability spacing text',
+    keywords='pangu text-spacing spacing text typesetting readability chinese japanese korean obsessive-compulsive-disorder ocd paranoia',
     author='Vinta Chen',
     author_email='vinta.chen@gmail.com',
     url='https://github.com/vinta/pangu.py',
