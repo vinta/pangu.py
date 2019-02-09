@@ -93,6 +93,7 @@ def spacing(text):
 
     new_text = text
 
+    # TODO: refactoring
     matched = CONVERT_TO_FULLWIDTH_CJK_SYMBOLS_CJK.search(new_text)
     while matched:
         start, end = matched.span()
