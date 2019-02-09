@@ -12,8 +12,6 @@ Paranoid text spacing for good readability, to automatically insert whitespace b
 '與 PM 戰鬥的人，應當小心自己不要成為 PM'
 """
 
-from __future__ import print_function
-
 import argparse
 import os
 import re
