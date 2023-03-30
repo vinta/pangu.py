@@ -1,12 +1,6 @@
 pangu.py
 ========
 
-.. image:: https://img.shields.io/travis/vinta/pangu.py/master.svg?style=flat-square
-    :target: https://travis-ci.org/vinta/pangu.py
-
-.. image:: https://img.shields.io/codecov/c/github/vinta/pangu.py/master.svg?style=flat-square
-    :target: https://codecov.io/github/vinta/pangu.py
-
 .. image:: https://img.shields.io/pypi/v/pangu.svg?style=flat-square
     :target: https://pypi.org/project/pangu/
 
