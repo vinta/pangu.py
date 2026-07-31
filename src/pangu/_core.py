@@ -239,7 +239,8 @@ BRACKET_PATTERNS = [
     (re.compile(r"\[([^\[\]]*)\]"), "[", "]"),
     (re.compile(r"\{([^{}]*)\}"), "{", "}"),
 ]
-BRACKET_INNER_SPACES = re.compile(r"^ +| +$")
+# \Z, not $: Python's $ also matches before a trailing newline (js's $ does not), which would delete a mid-content space in multiline bracket content
+BRACKET_INNER_SPACES = re.compile(r"^ +| +\Z")
 
 _AN_CHARS = frozenset("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
 

@@ -21,3 +21,9 @@ def test_handle_symbols_as_round_brackets():
     assert spacing_text("从结果来看，当a.b销毁后，`a.getB()`返回值为null") == "从结果来看，当 a.b 销毁后，`a.getB()` 返回值为 null"
 
     assert spacing_text("后续会直接用iframe window.addEventListener('message')") == "后续会直接用 iframe window.addEventListener('message')"
+
+
+def test_handle_multiline_content_in_round_brackets():
+    # A space before a newline is mid-content, not a bracket-edge space: only the literal string edges get stripped
+    assert spacing_text("(x \n)中") == "(x \n) 中"
+    assert spacing_text("(參數 \n)後面") == "(參數 \n) 後面"
