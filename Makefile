@@ -1,21 +1,25 @@
-.PHONY: clean test debug pack publish
+.PHONY: help install lint format typecheck test
 
-clean:
-	find . \( -name \*.pyc -o -name \*.pyo -o -name __pycache__ \) -prune -exec rm -rf {} +
-	rm -rf build/
-	rm -rf dist/
-	rm -rf pangu.egg-info/
+help: ## Show this help message
+	@echo 'Usage: make [target]'
+	@echo ''
+	@echo 'Targets:'
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-20s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-test: clean
-	python setup.py test
+install: ## Install dependencies
+	uv sync --locked
+	uv audit
 
-debug: clean
-	pip install --editable .
+lint: ## Run ruff formatter check and linter
+	uv run ruff format --check .
+	uv run ruff check .
 
-pack: clean
-	pip install wheel -U
-	python setup.py bdist_wheel sdist
+format: ## Auto-format and fix lint issues
+	uv run ruff format .
+	uv run ruff check --fix .
 
-publish: pack
-	pip install twine -U
-	twine upload dist/*
+typecheck: ## Run ty type checker
+	uv run ty check
+
+test: ## Run tests
+	uv run pytest -v

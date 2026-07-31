@@ -1,0 +1,98 @@
+[project]
+name = "pangu"
+version = "5.0.0"
+description = "Paranoid text spacing for good readability, to automatically insert whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols)."
+authors = [{ name = "Vinta Chen", email = "vinta.chen@gmail.com" }]
+readme = "README.rst"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = []
+keywords = [
+    "pangu",
+    "text-spacing",
+    "spacing",
+    "text",
+    "typesetting",
+    "readability",
+    "chinese",
+    "japanese",
+    "korean",
+    "obsessive-compulsive-disorder",
+    "ocd",
+    "paranoia",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Natural Language :: Chinese (Traditional)",
+    "Natural Language :: Chinese (Simplified)",
+    "Natural Language :: Japanese",
+    "Natural Language :: Korean",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Text Processing",
+    "Topic :: Text Processing :: Linguistic",
+    "Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://github.com/vinta/pangu.py"
+Repository = "https://github.com/vinta/pangu.py"
+
+[project.scripts]
+pangu = "pangu:cli"
+
+[build-system]
+requires = ["uv_build>=0.12.0,<0.13"]
+build-backend = "uv_build"
+
+[dependency-groups]
+test = ["pytest>=9.1.1"]
+lint = ["ruff>=0.16.0", "ty>=0.0.64"]
+dev = [
+    { include-group = "test" },
+    { include-group = "lint" },
+]
+
+[tool.uv]
+exclude-newer = "3 days"
+no-build = false # override user-level no-build so the project's own editable install can build
+
+[tool.ruff]
+line-length = 200
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D",      # pydocstyle
+    "COM812", # trailing comma (formatter conflict)
+    "ISC001", # string concat (formatter conflict)
+    "T20",    # print statements (CLI output)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = [
+    "ANN",     # type annotations not needed in tests
+    "S101",    # assert is the standard for pytest
+    "SLF001",  # testing private methods is intentional
+    "PLR2004", # magic values are clear in test assertions
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.ty.src]
+include = ["src", "tests"]
+
+[tool.ty.terminal]
+error-on-warning = true
+
+[tool.ty.rules]
+possibly-unresolved-reference = "error"
+unused-ignore-comment = "error"
