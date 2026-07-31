@@ -86,6 +86,15 @@ def test_check_composes_with_stdin(monkeypatch, capsys):
     assert cli(["-c"]) == 0
 
 
+def test_file_mode_requires_explicit_path(monkeypatch, capsys):
+    # stdin only ever carries text, never a file path
+    monkeypatch.setattr(sys, "stdin", io.StringIO("/some/path.txt"))
+    with pytest.raises(SystemExit) as excinfo:
+        cli(["-f"])
+    assert excinfo.value.code == 2
+    assert "requires a file path" in capsys.readouterr().err
+
+
 def test_no_input_on_a_tty_is_a_usage_error(monkeypatch, capsys):
     monkeypatch.setattr(sys, "stdin", _TtyStringIO())
     with pytest.raises(SystemExit) as excinfo:

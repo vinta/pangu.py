@@ -53,6 +53,9 @@ def cli(argv: Sequence[str] | None = None) -> int:
 
     if args.text_or_path is not None:
         source = args.text_or_path
+    elif args.is_file:
+        # a file path must be an explicit argument; stdin only ever carries text
+        parser.error("the -f/--file option requires a file path argument")
     elif not sys.stdin.isatty():
         source = sys.stdin.read()
     else:
