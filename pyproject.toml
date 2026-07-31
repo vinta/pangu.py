@@ -45,6 +45,7 @@ Repository = "https://github.com/vinta/pangu.py"
 
 [project.scripts]
 pangu = "pangu:cli"
+pangu-py = "pangu:cli" # unambiguous name for when pangu.js's CLI shadows `pangu` on PATH
 
 [build-system]
 requires = ["uv_build>=0.12.0,<0.13"]

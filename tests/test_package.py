@@ -14,6 +14,11 @@ def test_version_matches_package_metadata():
     assert pangu.__version__ == importlib.metadata.version("pangu")
 
 
+def test_console_script_names():
+    scripts = {ep.name for ep in importlib.metadata.distribution("pangu").entry_points if ep.group == "console_scripts"}
+    assert scripts == {"pangu", "pangu-py"}
+
+
 # Ported from pangu.js tests/node/index.test.ts (spacingFileSync)
 def test_spacing_file():
     expected = (FIXTURES / "text-file.expected.txt").read_text(encoding="utf-8")

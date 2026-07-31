@@ -25,7 +25,8 @@ def _build_parser() -> argparse.ArgumentParser:
             "pangu.py -- Paranoid text spacing for good readability, to automatically insert whitespace between CJK and half-width characters (alphabetical letters, numerical digits and symbols)."
         ),
     )
-    parser.add_argument("-v", "--version", action="version", version=__version__)
+    # self-identifying so `pangu -v` disambiguates from pangu.js when both are installed
+    parser.add_argument("-v", "--version", action="version", version=f"pangu.py {__version__}")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("-t", "--text", action="store_true", dest="is_text", help="treat the input as text (default)")
     mode.add_argument("-f", "--file", action="store_true", dest="is_file", help="treat the input as a file path")

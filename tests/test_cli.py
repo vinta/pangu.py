@@ -43,7 +43,8 @@ def test_handle_version(capsys):
     with pytest.raises(SystemExit) as excinfo:
         cli(["--version"])
     assert excinfo.value.code == 0
-    assert capsys.readouterr().out.strip() == __version__
+    # self-identifying so users can tell pangu.py from pangu.js when both are installed
+    assert capsys.readouterr().out.strip() == f"pangu.py {__version__}"
 
 
 def test_check_proper_spacing_exits_zero(capsys):
