@@ -528,4 +528,5 @@ def has_proper_spacing(text: str) -> bool:
 
 def spacing_file(path: str | os.PathLike[str], *, encoding: str = "utf-8") -> str:
     """Read the file at ``path`` and return its content with spacing applied."""
-    return spacing_text(Path(path).read_text(encoding=encoding))
+    # Decode bytes directly, not read_text(): text mode's universal newlines would rewrite \r\n and \r to \n, while js readFileSync preserves line endings
+    return spacing_text(Path(path).read_bytes().decode(encoding))

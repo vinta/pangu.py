@@ -40,6 +40,31 @@ def test_spacing_file_encoding_keyword(tmp_path):
     assert spacing_file(path, encoding="utf-16") == "中文 abc"
 
 
+# Expected values come from pangu.js spacingFileSync, which reads bytes and never translates line endings
+def test_spacing_file_preserves_crlf_line_endings(tmp_path):
+    path = tmp_path / "crlf.txt"
+    path.write_bytes("中文abc\r\n第二行ABC\r\n".encode())
+    assert spacing_file(path) == "中文 abc\r\n第二行 ABC\r\n"
+
+
+def test_spacing_file_preserves_lone_cr_line_endings(tmp_path):
+    path = tmp_path / "cr.txt"
+    path.write_bytes("中文abc\r尾行ABC\r".encode())
+    assert spacing_file(path) == "中文 abc\r尾行 ABC\r"
+
+
+def test_spacing_file_preserves_crlf_without_eof_newline(tmp_path):
+    path = tmp_path / "crlf-no-eof.txt"
+    path.write_bytes("中文abc\r\n尾行XYZ".encode())
+    assert spacing_file(path) == "中文 abc\r\n尾行 XYZ"
+
+
+def test_spacing_file_preserves_trailing_space_before_crlf(tmp_path):
+    path = tmp_path / "trailing-space.txt"
+    path.write_bytes("字A\r\n空格 在行尾 \r\n".encode())
+    assert spacing_file(path) == "字 A\r\n空格 在行尾 \r\n"
+
+
 def test_spacing_file_missing_file_raises():
     with pytest.raises(FileNotFoundError):
         spacing_file(FIXTURES / "no-such-file.txt")
