@@ -36,6 +36,24 @@ def test_handle_file_content(tmp_path, capsys):
     assert capsys.readouterr().out.strip() == "老婆餅裡面沒有老婆，JavaScript 裡面也沒有 Java"
 
 
+def test_file_mode_preserves_eof_newlines_exactly(tmp_path, capsys):
+    # File mode only does spacing: no newline appended, the file's own EOF newlines (zero, one, or many) pass through untouched
+    no_eof = tmp_path / "no-eof.txt"
+    no_eof.write_bytes("中文abc".encode())
+    assert cli(["-f", str(no_eof)]) == 0
+    assert capsys.readouterr().out == "中文 abc"
+
+    one_newline = tmp_path / "one-newline.txt"
+    one_newline.write_bytes("中文abc\n".encode())
+    assert cli(["-f", str(one_newline)]) == 0
+    assert capsys.readouterr().out == "中文 abc\n"
+
+    two_newlines = tmp_path / "two-newlines.txt"
+    two_newlines.write_bytes("中文abc\n\n".encode())
+    assert cli(["-f", str(two_newlines)]) == 0
+    assert capsys.readouterr().out == "中文 abc\n\n"
+
+
 def test_handle_text_by_default(capsys):
     assert cli(["中文abc"]) == 0
     assert capsys.readouterr().out.strip() == "中文 abc"

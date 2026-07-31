@@ -46,9 +46,9 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _print_spacing(text: str) -> int:
+def _print_spacing(text: str, *, end: str = "\n") -> int:
     try:
-        print(text)
+        print(text, end=end)
     except BrokenPipeError:
         # `pangu -f big.txt | head` — point stdout at devnull so the interpreter's
         # shutdown flush does not raise a second time and stack-trace
@@ -86,4 +86,5 @@ def cli(argv: Sequence[str] | None = None) -> int:
         print(f"Corrected: {new_text}", file=sys.stderr)
         return 1
 
-    return _print_spacing(new_text)
+    # File mode only does spacing: the file's own EOF newlines (or lack of one) pass through untouched, so nothing extra is appended
+    return _print_spacing(new_text, end="" if is_file else "\n")
