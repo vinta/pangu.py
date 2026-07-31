@@ -16,7 +16,7 @@ Breaking changes:
 
 New:
 
-- HTML tag protection (attribute values still spaced), tag mentions, backtick protection, protected words, compound words, file paths, per-line slash/pipe/plus readings, affix readings
+- HTML tag protection (attribute values still spaced), tag mentions, backtick protection, compound words, file paths, per-line slash/pipe/plus readings, affix readings
 - `pangu.has_proper_spacing(text)`
 - CLI `-c/--check`: exit 0 if the text has proper spacing, 1 if not (corrected text on stderr)
 - Fully type-annotated (`py.typed`)

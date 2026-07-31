@@ -170,29 +170,10 @@ ANS_SLASH_CJK = re.compile(rf"([{AN}])([/])([{CJK}])")
 PIPE_CJK_CONTACT = re.compile(rf"[{CJK}]\||\|[{CJK}]")
 PIPE_SEPARATOR = re.compile(r"([^\s|])[ ]*(\|+)[ ]*(?=[^\s|])")
 
-# Plus patterns for separator vs joiner-token behavior, decided per line like the
-# pipe. Contact includes a protected word placeholder edge (\uE020/\uE021): a
-# symbol touching an atom reads as an operator. The separator matches a solitary
-# plus only - a space-adjacent plus is settled and a ++ run is a preserved
+# Plus patterns for separator vs joiner-token behavior, decided per line like the pipe. The separator matches a solitary plus only: a space-adjacent plus is settled and a ++ run is a preserved
 # pattern (C++, i++)
-PLUS_CJK_CONTACT = re.compile(rf"[{CJK}\ue021]\+|\+[{CJK}\ue020]")
+PLUS_CJK_CONTACT = re.compile(rf"[{CJK}]\+|\+[{CJK}]")
 PLUS_SEPARATOR = re.compile(r"(?<=[^\s+])\+(?=[^\s+])")
-
-# Protected words are literal atoms, never modified inside and spaced from their
-# neighbors as one unit; a + in direct contact with an atom reads as an operator,
-# never as an AN_PLUS_CJK affix (MOD+影劇館+ reads as MOD + the atom,
-# not as a MOD+ suffix). Disney+/100+ stay on the affix shape rule and C++ stays
-# pattern-preserved, so they stay out of the list. While rules run, an atom is an
-# opaque \uE020...\uE021 placeholder storing its + pre-masked as \uE022; it is
-# restored with the mask still on so no later rule re-reads the +, and the mask
-# is spaced from a following CJK, AN, or left bracket like a word edge (it stays
-# flush against a slash), then unmasked at the end.
-# Entries must be CJK runs with + only: the mask covers just +, so a word needing
-# any other preserved symbol or shape is unsupported, see pangu.js ADR 0006 before adding
-PROTECTED_WORDS = ["公視+", "影劇館+"]
-PROTECTED_WORDS_PATTERN = re.compile("|".join(re.escape(word) for word in PROTECTED_WORDS))
-PROTECTED_WORD_PLUS_MASK_BEFORE_WORD = re.compile(rf"(\ue022)(?=[{CJK}{AN}{LEFT_BRACKETS_BASIC}])")
-PROTECTED_WORD_PLUS_MASK = re.compile("\ue022")
 
 # Special handling for single letter grades/ratings (A+, B-, C*) before CJK
 # These should have space after the operator, not before
@@ -427,11 +408,8 @@ def _spacing_pipes_in_line(line: str) -> str:
 
 
 def _spacing_pluses_in_line(line: str) -> str:
-    # Plus reading is per line: a plus in direct contact with CJK or a protected
-    # word makes every unsettled plus on the line a separator with spaces on both
-    # sides (telecom bundle plans chaining products with +). A settled plus keeps
-    # its reading: space-adjacent, affix-attached (Disney+, +886), or in a ++ run
-    # (C++); a line with no such contact keeps its joiner tokens tight (A+B, 5+5)
+    # Plus reading is per line: a plus in direct contact with CJK makes every unsettled plus on the line a separator with spaces on both sides, as in telecom bundle plans that chain products with +
+    # A settled plus keeps its reading: space-adjacent, affix-attached (Disney+, +886), or in a ++ run (C++). A line with no CJK contact keeps its joiner tokens tight (A+B, 5+5)
     if not PLUS_CJK_CONTACT.search(line):
         return line
     return PLUS_SEPARATOR.sub(" + ", line)
@@ -549,11 +527,6 @@ def spacing_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the
     # Store compound words and replace with placeholders
     new_text = COMPOUND_WORD_PATTERN.sub(lambda match: compound_word_manager.store(match.group(0)), new_text)
 
-    # Protect words on the protected word list before the affix readings below:
-    # an atom is hidden while the symbol rules run, stored with its + pre-masked
-    protected_word_manager = PlaceholderReplacer("PROTECTED_WORD_PLACEHOLDER_", "\ue020", "\ue021")
-    new_text = PROTECTED_WORDS_PATTERN.sub(lambda match: protected_word_manager.store(match.group(0).replace("+", "\ue022")), new_text)
-
     # Handle single letter grades (A+, B-, etc.) before general operator rules
     # This ensures "A+的" becomes "A+ 的" not "A + 的"
     new_text = SINGLE_LETTER_GRADE_CJK.sub(r"\1\2 \3", new_text)
@@ -588,11 +561,6 @@ def spacing_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the
     # Restore compound words from placeholders
     new_text = compound_word_manager.restore(new_text)
 
-    # Restore protected words, still carrying the masked +: the atom's CJK is real
-    # text again so its left edge is spaced by the normal rules below (ANS_CJK
-    # spaces a half-width run before the atom), while the mask keeps the + attached
-    new_text = protected_word_manager.restore(new_text)
-
     new_text = CJK_LEFT_BRACKET.sub(r"\1 \2", new_text)
     new_text = RIGHT_BRACKET_CJK.sub(r"\1 \2", new_text)
     new_text = ANS_CJK_LEFT_BRACKET_ANY_RIGHT_BRACKET.sub(r"\1 \2\3\4", new_text)
@@ -604,11 +572,6 @@ def spacing_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the
 
     new_text = CJK_ANS.sub(r"\1 \2", new_text)
     new_text = ANS_CJK.sub(r"\1 \2", new_text)
-
-    # A protected word's masked + is a word edge: space it from a following CJK,
-    # AN, or left bracket, then unmask it back to +
-    new_text = PROTECTED_WORD_PLUS_MASK_BEFORE_WORD.sub(r"\1 ", new_text)
-    new_text = PROTECTED_WORD_PLUS_MASK.sub("+", new_text)
 
     new_text = S_A.sub(r"\1 \2", new_text)
 
