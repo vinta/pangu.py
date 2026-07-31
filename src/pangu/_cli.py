@@ -1,15 +1,12 @@
 """Command-line interface: flag-parity with pangu.js (src/node/cli.ts), including its stdin rules.
 
 Stdin rules, shared with the js CLI (the rules pangu.js issue #309 adopts): an explicit ``-`` always
-means stdin, a missing argument falls back to stdin only when input is piped, an explicit argument
-wins over piped stdin, and ``-c`` composes with stdin.
+means stdin — under ``-f`` too (cf. ``tar -f -``) — a missing argument falls back to stdin only when
+input is piped, an explicit argument wins over piped stdin, and ``-c`` composes with stdin.
 
 Deliberate deviations from the js CLI, all user-facing:
 
 - usage errors exit 2 (argparse convention) where js exits 1
-- ``-f`` with stdin instead of a path is a usage error where js falls back to
-  spacing the piped text: stdin only ever carries text, a file path must be an
-  explicit argument
 """
 
 import argparse
@@ -43,7 +40,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("-v", "--version", action="version", version=f"pangu.py {__version__}")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("-t", "--text", action="store_true", dest="is_text", help="treat the input as text (default)")
-    mode.add_argument("-f", "--file", action="store_true", dest="is_file", help="treat the input as a file path")
+    mode.add_argument("-f", "--file", action="store_true", dest="is_file", help="treat the input as a file path (pass - to read from stdin)")
     mode.add_argument("-c", "--check", action="store_true", dest="is_check", help="check whether the input already has proper spacing (exit 0 if yes, 1 if no)")
     parser.add_argument("text_or_path", nargs="?", help="the text or file path to apply spacing; omit it to read stdin when input is piped")
     return parser
@@ -66,19 +63,22 @@ def cli(argv: Sequence[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
 
-    if args.is_file and args.text_or_path in {None, "-"}:
-        # a file path must be an explicit argument; stdin only ever carries text
-        parser.error("the -f/--file option requires a file path argument")
+    if args.is_file and not args.text_or_path:
+        # An empty string is what -f "$EMPTY_VAR" expands to, so it counts as a missing path rather than a file to open
+        parser.error("argument --file: expected a file path")
 
     if args.text_or_path == "-" or (args.text_or_path is None and not sys.stdin.isatty()):
+        # An explicit - always means stdin, under -f too (cf. tar -f -): the text itself arrives on stdin, so there is no file to open
         # print() puts the trailing newline back, so dropping one here passes piped input through unchanged
         source = sys.stdin.read().removesuffix("\n")
+        is_file = False
     elif args.text_or_path is not None:
         source = args.text_or_path
+        is_file = args.is_file
     else:
         parser.error("the following arguments are required: text_or_path (or pipe text via stdin)")
 
-    new_text = spacing_file(source) if args.is_file else spacing_text(source)
+    new_text = spacing_file(source) if is_file else spacing_text(source)
 
     if args.is_check:
         if new_text == source:

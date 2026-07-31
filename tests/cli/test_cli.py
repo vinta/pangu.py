@@ -105,22 +105,31 @@ def test_check_composes_with_stdin(monkeypatch, capsys):
     assert cli(["-c"]) == 0
 
 
-def test_file_mode_requires_explicit_path(monkeypatch, capsys):
-    # stdin only ever carries text, never a file path
+def test_file_mode_dash_reads_stdin(monkeypatch, capsys):
+    # -f - is the conventional spelling for "the file is stdin" (cf. tar -f -)
+    monkeypatch.setattr(sys, "stdin", io.StringIO("老婆餅裡面沒有老婆，JavaScript裡面也沒有Java\n"))
+    assert cli(["-f", "-"]) == 0
+    assert capsys.readouterr().out == "老婆餅裡面沒有老婆，JavaScript 裡面也沒有 Java\n"
+
+
+def test_reject_file_flag_without_path_even_when_piped(monkeypatch, capsys):
+    # a missing path is a usage error instead of a stdin fallback
     monkeypatch.setattr(sys, "stdin", io.StringIO("/some/path.txt"))
     with pytest.raises(SystemExit) as excinfo:
         cli(["-f"])
     assert excinfo.value.code == 2
-    assert "requires a file path" in capsys.readouterr().err
+    assert "argument --file: expected a file path" in capsys.readouterr().err
 
 
-def test_file_mode_rejects_dash(monkeypatch, capsys):
-    # deviation from js, which silently spaces the piped text: - means stdin, stdin only ever carries text
+def test_reject_file_flag_with_empty_path_without_crashing(monkeypatch, capsys):
+    # an empty string is what -f "$EMPTY_VAR" expands to: a missing path, not a file to open
     monkeypatch.setattr(sys, "stdin", io.StringIO("中文abc"))
     with pytest.raises(SystemExit) as excinfo:
-        cli(["-f", "-"])
+        cli(["-f", ""])
     assert excinfo.value.code == 2
-    assert "requires a file path" in capsys.readouterr().err
+    err = capsys.readouterr().err
+    assert "argument --file: expected a file path" in err
+    assert "Traceback" not in err
 
 
 def test_no_input_on_a_tty_is_a_usage_error(monkeypatch, capsys):
