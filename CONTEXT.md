@@ -17,7 +17,7 @@ _Avoid_: paranoid spacing
 
 ## Paranoid Text Spacing Algorithm
 
-The algorithm behind text spacing. Source of truth: `src/pangu/_core.py` (a 1:1 port of pangu.js `src/shared/index.ts`), exhaustive examples: the per-symbol files in `tests/shared/`.
+The algorithm behind text spacing. Source of truth: `src/pangu/_core.py` (a 1:1 port of pangu.js `src/shared/index.ts`), exhaustive examples: the per-symbol files in `tests/core/` (ported from pangu.js `tests/shared/`).
 
 **Symbol handling**:
 A symbol between two half-width characters binds them into a joiner token and never gets spaces. A symbol in direct contact with CJK reads as an operator and gets spaces, unless an affix reading attaches it to its half-width side. A symbol in direct contact with a protected word reads as an operator, never as an affix. `/` additionally follows slash reading, `|` follows pipe reading, and `+` follows plus reading. The separator `_` never gets spaces.
@@ -60,7 +60,7 @@ _Avoid_: tag-in-prose, prose tag
 
 ## Porting
 
-Upstream is pangu.js v9. `src/pangu/_core.py` deliberately stays js-shaped — same UPPER_SNAKE pattern names, same load-bearing pipeline order — so each upstream release ports as a mechanical diff; do not "clean it up" (see `docs/adr/0001-traceable-core-pythonic-surface.md`). The public surface (module functions, argparse CLI, packaging) is idiomatic Python and deviates deliberately. The 1:1 test suite in `tests/shared/` is the parity spec.
+Upstream is pangu.js v9. `src/pangu/_core.py` deliberately stays js-shaped — same UPPER_SNAKE pattern names, same load-bearing pipeline order — so each upstream release ports as a mechanical diff; do not "clean it up" (see `docs/adr/0001-traceable-core-pythonic-surface.md`). The public surface (module functions, argparse CLI, packaging) is idiomatic Python and deviates deliberately. The 1:1 test suite in `tests/core/` (mirroring pangu.js `tests/shared/`) is the parity spec.
 
 ## Agent Skill Overrides
 
