@@ -1,13 +1,10 @@
 import io
 import subprocess
 import sys
-from pathlib import Path
 
 import pytest
 
 from pangu import __version__, cli
-
-FIXTURES = Path(__file__).parent.parent / "fixtures"
 
 
 class _TtyStringIO(io.StringIO):
