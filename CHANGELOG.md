@@ -2,7 +2,7 @@
 
 ## v5.0.0 / 2026-08-01
 
-- Implement **Paranoid Text Spacing algorithm** v9 (ported from [pangu.js](https://github.com/vinta/pangu.js))
+- Implement **Paranoid Text Spacing Algorithm v9** (ported from [pangu.js](https://github.com/vinta/pangu.js) `v9.1.0`)
 - Support Python 3.11+
 - Fully type-annotated (`py.typed`)
 - Add a method: `pangu.has_proper_spacing()`
@@ -38,7 +38,7 @@ Internal:
 
 ## v4.0.6.1 / 2019-02-09
 
-- Implement **Paranoid Text Spacing algorithm** v4
+- Implement **Paranoid Text Spacing Algorithm v4**
 - Support Python 3.7
 - Drop Python 2.7 support
 
@@ -65,8 +65,8 @@ Internal:
 
 ## v2.5.6 / 2015-05-17
 
+- Implement **Paranoid Text Spacing Algorithm v2**
 - Synchronize version number with [pangu.js](https://github.com/vinta/pangu.js)
-- Improve **Paranoid Text Spacing algorithm**
 
 ## v1.0.0 / 2014-02-12
 
