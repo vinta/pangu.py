@@ -38,14 +38,20 @@ def test_handle_english_with_symbols():
     assert spacing_text("【UCG中字】“數毛社”DF的《戰神4》全新演示解析") == "【UCG 中字】“數毛社” DF 的《戰神 4》全新演示解析"
 
 
-# ✀-➿
+# — An em-dash is not a spaced half-width symbol, so it stays flush against CJK
+def test_handle_em_dash_does_not_add_space_with_cjk():
+    assert spacing_text("前面—後面") == "前面—後面"
+    assert spacing_text("他說——不對") == "他說——不對"
+
+
+# \u2700 - \u27bf
 def test_handle_dingbats_symbols_add_space_between_them_and_cjk():
     assert spacing_text("剪刀✂符號") == "剪刀 ✂ 符號"
     assert spacing_text("完成✅了") == "完成 ✅ 了"
     assert spacing_text("愛心❤符號") == "愛心 ❤ 符號"
 
 
-# — An em-dash is not a spaced half-width symbol, so it stays flush against CJK
-def test_handle_em_dash_does_not_add_space_with_cjk():
-    assert spacing_text("前面—後面") == "前面—後面"
-    assert spacing_text("他說——不對") == "他說——不對"
+# FIXME
+# # \ufffd
+# def test_handle_specials_symbols_add_space_between_them_and_cjk():
+#     assert spacing_text("我喜歡在填表單的時候故意加幾個� (U+FFFD)字元，好讓那些工程師懷疑系統有bug") == "我喜歡在填表單的時候故意加幾個 � (U+FFFD) 字元，好讓那些工程師懷疑系統有 bug"
