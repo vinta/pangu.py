@@ -10,7 +10,7 @@ Breaking changes:
 - `pangu.spacing()` is removed; use `pangu.spacing_text()`
 - Output is no longer stripped of leading/trailing whitespace
 - `spacing_file()` reads files as UTF-8 by default (new keyword-only `encoding` parameter) instead of the locale encoding
-- The CLI reads stdin only when no argument is given; an explicit argument wins over piped stdin
+- The CLI reads stdin only when no argument is given; an explicit argument wins over piped stdin, and an explicit `-` argument always means stdin
 - CLI usage errors exit 2 (argparse convention)
 - Requires Python >= 3.11
 

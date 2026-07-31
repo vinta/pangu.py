@@ -63,11 +63,30 @@ def test_check_improper_spacing_exits_one_with_corrected_on_stderr(capsys):
     assert captured.err == "Corrected: 中文 abc\n"
 
 
-# Python-only stdin behavior
+# Stdin behavior, same rules as the pangu.js CLI since its v9.1
 def test_stdin_is_used_when_no_argument(monkeypatch, capsys):
     monkeypatch.setattr(sys, "stdin", io.StringIO("中文abc"))
     assert cli([]) == 0
     assert capsys.readouterr().out == "中文 abc\n"
+
+
+def test_stdin_composes_with_text_flag(monkeypatch, capsys):
+    monkeypatch.setattr(sys, "stdin", io.StringIO("測試CLI參數\n"))
+    assert cli(["-t"]) == 0
+    assert capsys.readouterr().out == "測試 CLI 參數\n"
+
+
+def test_dash_argument_always_means_stdin(monkeypatch, capsys):
+    monkeypatch.setattr(sys, "stdin", io.StringIO("老婆餅裡面沒有老婆\n"))
+    assert cli(["-"]) == 0
+    assert capsys.readouterr().out == "老婆餅裡面沒有老婆\n"
+
+
+def test_preserve_line_structure_of_multiline_stdin(monkeypatch, capsys):
+    # print() restores the one trailing newline that reading stdin dropped, so piped input passes through byte for byte
+    monkeypatch.setattr(sys, "stdin", io.StringIO("第一行有bug\n第二行有Java\n"))
+    assert cli([]) == 0
+    assert capsys.readouterr().out == "第一行有 bug\n第二行有 Java\n"
 
 
 def test_argument_wins_over_piped_stdin(monkeypatch, capsys):
@@ -91,6 +110,15 @@ def test_file_mode_requires_explicit_path(monkeypatch, capsys):
     monkeypatch.setattr(sys, "stdin", io.StringIO("/some/path.txt"))
     with pytest.raises(SystemExit) as excinfo:
         cli(["-f"])
+    assert excinfo.value.code == 2
+    assert "requires a file path" in capsys.readouterr().err
+
+
+def test_file_mode_rejects_dash(monkeypatch, capsys):
+    # deviation from js, which silently spaces the piped text: - means stdin, stdin only ever carries text
+    monkeypatch.setattr(sys, "stdin", io.StringIO("中文abc"))
+    with pytest.raises(SystemExit) as excinfo:
+        cli(["-f", "-"])
     assert excinfo.value.code == 2
     assert "requires a file path" in capsys.readouterr().err
 

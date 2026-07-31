@@ -1,11 +1,15 @@
-"""Command-line interface: flag-parity with pangu.js (src/node/cli.ts) plus Python-only stdin piping.
+"""Command-line interface: flag-parity with pangu.js (src/node/cli.ts), including its stdin rules.
 
-Deliberate deviations from the js CLI, all user-facing and documented in README:
+Stdin rules, shared with the js CLI (the rules pangu.js issue #309 adopts): an explicit ``-`` always
+means stdin, a missing argument falls back to stdin only when input is piped, an explicit argument
+wins over piped stdin, and ``-c`` composes with stdin.
+
+Deliberate deviations from the js CLI, all user-facing:
 
 - usage errors exit 2 (argparse convention) where js exits 1
-- an explicit argument wins over piped stdin; stdin is read only when no argument
-  is given (the rule pangu.js issue #309 adopts)
-- ``-c`` composes with piped stdin
+- ``-f`` with stdin instead of a path is a usage error where js falls back to
+  spacing the piped text: stdin only ever carries text, a file path must be an
+  explicit argument
 """
 
 import argparse
@@ -22,6 +26,7 @@ pangu.py -- Paranoid text spacing for good readability, to automatically insert 
 _EPILOG = """
 notes:
   - an explicit argument wins over piped stdin; stdin is read only when no argument is given
+  - an explicit - argument always means stdin
 """
 
 
@@ -61,13 +66,15 @@ def cli(argv: Sequence[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
 
-    if args.text_or_path is not None:
-        source = args.text_or_path
-    elif args.is_file:
+    if args.is_file and args.text_or_path in {None, "-"}:
         # a file path must be an explicit argument; stdin only ever carries text
         parser.error("the -f/--file option requires a file path argument")
-    elif not sys.stdin.isatty():
-        source = sys.stdin.read()
+
+    if args.text_or_path == "-" or (args.text_or_path is None and not sys.stdin.isatty()):
+        # print() puts the trailing newline back, so dropping one here passes piped input through unchanged
+        source = sys.stdin.read().removesuffix("\n")
+    elif args.text_or_path is not None:
+        source = args.text_or_path
     else:
         parser.error("the following arguments are required: text_or_path (or pipe text via stdin)")
 
