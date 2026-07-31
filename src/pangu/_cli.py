@@ -40,7 +40,7 @@ def _build_parser() -> argparse.ArgumentParser:
     mode.add_argument("-t", "--text", action="store_true", dest="is_text", help="treat the input as text (default)")
     mode.add_argument("-f", "--file", action="store_true", dest="is_file", help="treat the input as a file path")
     mode.add_argument("-c", "--check", action="store_true", dest="is_check", help="check whether the input already has proper spacing (exit 0 if yes, 1 if no)")
-    parser.add_argument("text_or_path", nargs="?", help="the text or file path to apply spacing; reads stdin when omitted and piped")
+    parser.add_argument("text_or_path", nargs="?", help="the text or file path to apply spacing; omit it to read stdin when input is piped")
     return parser
 
 
