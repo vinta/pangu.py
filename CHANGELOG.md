@@ -4,7 +4,6 @@
 
 - Implement **Paranoid Text Spacing algorithm** v9 (ported from [pangu.js](https://github.com/vinta/pangu.js))
 - Support Python 3.11+
-- Drop Python 3.10 support
 - Fully type-annotated (`py.typed`)
 - Add a method: `pangu.has_proper_spacing()`
 - Add a command-line tool: `pangu-py` (an alias of the original `pangu`, to avoid a name collision)
