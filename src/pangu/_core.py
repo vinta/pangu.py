@@ -24,29 +24,35 @@ import re
 from pathlib import Path
 from typing import ClassVar
 
-# CJK is short for Chinese, Japanese, and Korean:
-# \u2e80-\u2eff CJK Radicals Supplement
-# \u2f00-\u2fdf Kangxi Radicals
-# \u3040-\u309f Hiragana
-# \u30a0-\u30ff Katakana
-# \u3100-\u312f Bopomofo
-# \u3200-\u32ff Enclosed CJK Letters and Months
-# \u3400-\u4dbf CJK Unified Ideographs Extension A
-# \u4e00-\u9fff CJK Unified Ideographs
-# \uf900-\ufaff CJK Compatibility Ideographs
+# CJK is short for Chinese, Japanese, and Korean
 #
 # ANS is short for Alphabets, Numbers, and Symbols:
-# A includes A-Za-z\u0370-\u03ff
+# A includes A-Za-z plus Greek and Coptic
 # N includes 0-9
-# S includes `~!@#$%^&*()-_=+[]{}\|;:'",<.>/?
+# S varies per rule, see the symbol sets below
 #
-# All J below does not include \u30fb
-# Some S below does not include all symbols
-#
-# For more information about Unicode blocks, see
-# https://symbl.cc/en/unicode-table/
+# For more about Unicode blocks, see https://symbl.cc/en/unicode-table/
 
-CJK = r"\u2e80-\u2eff\u2f00-\u2fdf\u3040-\u309f\u30a0-\u30fa\u30fc-\u30ff\u3100-\u312f\u3200-\u32ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff"
+# Unicode blocks. A name that ends in a carve-out marks a range that is deliberately smaller than its whole block, so widening it back to the block boundary is a wrong edit, not a tidy-up
+CJK_RADICALS_SUPPLEMENT = r"\u2e80-\u2eff"
+KANGXI_RADICALS = r"\u2f00-\u2fdf"
+HIRAGANA = r"\u3040-\u309f"
+KATAKANA_NO_MIDDLE_DOT = r"\u30a0-\u30fa\u30fc-\u30ff"  # The Katakana block ends at \u30ff, but \u30fb is the character that MIDDLE_DOT normalizes to, so it must not read as CJK itself
+BOPOMOFO = r"\u3100-\u312f"
+ENCLOSED_CJK_LETTERS_AND_MONTHS = r"\u3200-\u32ff"
+CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A = r"\u3400-\u4dbf"
+CJK_UNIFIED_IDEOGRAPHS = r"\u4e00-\u9fff"
+CJK_COMPATIBILITY_IDEOGRAPHS = r"\uf900-\ufaff"
+GREEK_AND_COPTIC = r"\u0370-\u03ff"
+# The Latin-1 Supplement block starts at \u0080, but this range starts one past NBSP (\u00a0) so an NBSP lands in no character class at all. See pangu.js ADR 0009
+LATIN_1_SUPPLEMENT_AFTER_NBSP = r"\u00a1-\u00ff"
+NUMBER_FORMS = r"\u2150-\u218f"
+DINGBATS = r"\u2700-\u27bf"
+
+CJK = (
+    f"{CJK_RADICALS_SUPPLEMENT}{KANGXI_RADICALS}{HIRAGANA}{KATAKANA_NO_MIDDLE_DOT}{BOPOMOFO}{ENCLOSED_CJK_LETTERS_AND_MONTHS}"
+    f"{CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A}{CJK_UNIFIED_IDEOGRAPHS}{CJK_COMPATIBILITY_IDEOGRAPHS}"
+)
 
 # Basic character classes
 AN = "A-Za-z0-9"
@@ -68,12 +74,11 @@ RIGHT_BRACKETS_BASIC = r"\)\]\}"  # For RIGHT_BRACKET_AN
 LEFT_BRACKETS_EXTENDED = r"\(\[\{<>\u201c"  # For CJK_LEFT_BRACKET (includes angle brackets + curly quote)
 RIGHT_BRACKETS_EXTENDED = r"\)\]\}<>\u201d"  # For RIGHT_BRACKET_CJK
 
-# ANS extended sets - CAREFUL: different symbols!
-ANS_CJK_AFTER = rf"{A}\u0370-\u03ff0-9@\$%\^&\*\-\+\\=\u00a1-\u00ff\u2150-\u218f\u2700-\u27bf"  # Has @, no punctuation
-ANS_BEFORE_CJK = rf"{A}\u0370-\u03ff0-9\$%\^&\*\-\+\\=\u00a1-\u00ff\u2150-\u218f\u2700-\u27bf"  # No @ symbol
-# Both ranges start at \u00a1, one past NBSP (\u00a0), so an NBSP is in no character class at all. That inertness is load-bearing: an NBSP already separates the runs
-# it sits between, so no rule matches across it and none fires. pangu therefore never rewrites an author's NBSP, it only ever inserts a space where one is genuinely
-# missing. See pangu.js ADR 0009
+# ANS extended sets. The two sets are not identical, see the inline notes
+# Both ranges start at \u00a1, one past NBSP (\u00a0), so an NBSP is in no character class at all. That inertness is load-bearing: an NBSP already separates the runs it sits between,
+# so no rule matches across it and none fires. pangu therefore never rewrites an author's NBSP, it only inserts a space where one is genuinely missing. See pangu.js ADR 0009
+ANS_CJK_AFTER = rf"{A}{GREEK_AND_COPTIC}0-9@\$%\^&\*\-\+\\={LATIN_1_SUPPLEMENT_AFTER_NBSP}{NUMBER_FORMS}{DINGBATS}"  # Has @, no punctuation
+ANS_BEFORE_CJK = rf"{A}{GREEK_AND_COPTIC}0-9\$%\^&\*\-\+\\={LATIN_1_SUPPLEMENT_AFTER_NBSP}{NUMBER_FORMS}{DINGBATS}"  # No @ symbol
 
 # File path components - common directories in Unix/project paths
 FILE_PATH_DIRS = (
