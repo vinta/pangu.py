@@ -1,18 +1,15 @@
 # pangu.py
 
-[![PyPI](https://img.shields.io/pypi/v/pangu.svg?style=flat-square)](https://pypi.org/project/pangu/)
-[![Python versions](https://img.shields.io/pypi/pyversions/pangu.svg?style=flat-square)](https://pypi.org/project/pangu/)
-[![Made with love](https://img.shields.io/badge/made%20with-%e2%9d%a4-ff69b4.svg?style=flat-square)](https://vinta.ws/code/)
+[![PyPI Version](https://img.shields.io/pypi/v/pangu.svg?style=for-the-badge)](https://pypi.org/project/pangu/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/pangu.svg?style=for-the-badge)](https://pypi.org/project/pangu/)
 
 Paranoid text spacing for good readability, to automatically insert whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).
 
-pangu.py 5.0 implements the same text-spacing algorithm as [pangu.js](https://github.com/vinta/pangu.js) v9.
-
-- [pangu.go](https://github.com/vinta/pangu) (Go)
-- [pangu.java](https://github.com/vinta/pangu.java) (Java)
-- [pangu.js](https://github.com/vinta/pangu.js) (JavaScript)
-- [pangu.py](https://github.com/vinta/pangu.py) (Python)
-- [pangu.space](https://github.com/vinta/pangu.space) (Web API)
+- [pangu.js](https://github.com/vinta/pangu.js)
+- [pangu.py](https://github.com/vinta/pangu.py)
+- [pangu.go](https://github.com/vinta/pangu)
+- [pangu.java](https://github.com/vinta/pangu.java)
+- [pangu.space](https://github.com/vinta/pangu.space)
 
 ## Installation
 
