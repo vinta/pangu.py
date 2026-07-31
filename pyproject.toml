@@ -37,6 +37,7 @@ classifiers = [
     "Topic :: Text Processing",
     "Topic :: Text Processing :: Linguistic",
     "Topic :: Utilities",
+    "Typing :: Typed",
 ]
 
 [project.urls]
