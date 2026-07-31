@@ -72,7 +72,10 @@ ignore = [
     "COM812", # trailing comma (formatter conflict)
     "ISC001", # string concat (formatter conflict)
     "T20",    # print statements (CLI output)
+    "CPY",    # no copyright notices in this project
 ]
+# CJK text in strings, docstrings, and comments is this library's subject matter
+allowed-confusables = ["，", "：", "、", "！", "？", "（", "）"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = [
@@ -80,6 +83,10 @@ ignore = [
     "S101",    # assert is the standard for pytest
     "SLF001",  # testing private methods is intentional
     "PLR2004", # magic values are clear in test assertions
+    "RUF001",  # test strings are full of CJK punctuation by design
+    "RUF002",
+    "RUF003",
+    "E501",    # 1:1 ported test cases keep pangu.js line shapes
 ]
 
 [tool.ruff.format]
