@@ -1,0 +1,63 @@
+# pangu.py
+
+Automatic whitespace insertion between CJK and half-width characters, delivered as a text engine and a CLI. Python port of the [pangu.js](https://github.com/vinta/pangu.js) v9 text-spacing algorithm.
+
+## Language
+
+**CJK**:
+The class of Chinese, Japanese, and Korean characters that every spacing rule keys on.
+
+**Half-width**:
+Alphabetical letters, numerical digits, and symbols that trigger spacing when adjacent to CJK.
+_Avoid_: ANS, alphanumeric
+
+**Text spacing**:
+Inserting whitespace between CJK and half-width characters within a single run of text.
+_Avoid_: paranoid spacing
+
+## Paranoid Text Spacing Algorithm
+
+The algorithm behind text spacing. Source of truth: `src/pangu/_core.py` (a 1:1 port of pangu.js `src/shared/index.ts`), exhaustive examples: the per-symbol files in `tests/core/` (ported from pangu.js `tests/shared/`).
+
+**Symbol handling**:
+A symbol between two half-width characters binds them into a joiner token and never gets spaces. A symbol in direct contact with CJK reads as an operator and gets spaces, unless an affix reading attaches it to its half-width side. `/` additionally follows slash reading, `|` follows pipe reading, and `+` follows plus reading. The separator `_` never gets spaces.
+
+**Joiner token**:
+Half-width characters joined tight by any symbol (`A/B`, `26/30`, `vinta/hal-9000`, `S&P`, `Q&A`, `A+B`, `5+5`, `foo=bar&baz=1`, `A<B`, `HSIAO-MING`). Never split, and spaced from adjacent CJK as one unit. Slashes, pipes, and plus signs additionally follow slash reading, pipe reading, and plus reading.
+_Avoid_: slash token, slash operand pair, &-token
+
+**Slash reading**:
+Decided per line, never across lines. A slash with half-width characters on both sides forms a joiner token. A line's only slash acts as an operator when CJK touches it. Repeated slashes on a line read as a file path or a list and stay unspaced.
+
+**Pipe reading**:
+Decided per line, never across lines. A pipe in direct CJK contact makes every pipe on the line a separator with spaces on both sides, covering concatenated page titles (`型號 | Disney+ 幫助中心 | TW`) and credit lines (`作詞 | 林夕`). A line whose pipes touch no CJK keeps them tight as joiner tokens (`條件是 x|y 的情況`, `ps aux|grep node`).
+
+**Plus reading**:
+Decided per line, never across lines. A plus in direct contact with CJK makes every unsettled plus on the line a separator with spaces on both sides, covering bundle plans (`HiNet 光世代 + MOD`). A plus is settled when it is already space-adjacent, attached by an affix reading (`Disney+ 上架`, `打 +886`), or inside a preserved pattern (`C++`). A line with no such contact keeps its pluses tight as joiner tokens (`得到一個 A+B 的結果`, `答案是 5+5 的和`).
+
+**Affix reading**:
+A symbol that attaches to its half-width side at a CJK boundary instead of reading as an operator: `+` or `-` before digits as a sign (`打 +886`, `氣溫是 -5 度`), `-` before a lowercase flag (`參數要加 -m 的旗標`), `+` after a half-width run as a suffix (`Disney+ 上架`, `有 100+ 的選擇`), and single-letter grades (`A+`, `D-`). A capitalized word after a hyphen keeps the operator reading (`陳上進 - Vinta`).
+
+**No CJK contact, no change**:
+The invariant behind every symbol rule. Half-width text that touches no CJK is never modified. A symbol must touch CJK directly to read as an operator, so CJK elsewhere in the line or text never licenses spacing between half-width characters.
+
+**Pattern preservation**:
+Compound words (`state-of-the-art`, `GPT-5`, `claude-4-opus`), programming terms (`C++`, `A+`, `i++`, `D-`, `C#`, `F#`), arrow tokens (`=>`, `->`), glob patterns (`*.log`, `templates/*.html`), and file paths (`/usr/bin`, `src/main.py`, `C:\Users\`) keep their internal shape, even where an operator reading would otherwise apply.
+
+**Punctuation**:
+Half-width punctuation is not converted to full-width, with two exceptions: a colon in direct CJK contact right before a parenthesis becomes `：`, and middle dots (`·` `•` `‧`) normalize to `・`. Multiple consecutive punctuation marks are preserved. A `!` `;` `,` or `?` run directly touching CJK on its right always gets a trailing space regardless of what precedes it (`(30個月),月繳`, `50%,以上`), so a stray space typed before the mark is rewritten rather than preserved.
+
+**HTML**:
+Tags are protected from spacing rules. Text inside attributes is processed. The exception is a tag mention, which is spaced.
+
+**Tag mention**:
+A bare tag with no attributes, a non-void name, and no closing counterpart anywhere in the text, self-closing or not (`在這裡插入一個 <div> 標籤`, `型別是 List<String> 的容器`, `這裡放 <Spinner /> 元件`). Reads as one unit mentioned in prose rather than markup: spaced at direct CJK contact, tight against half-width characters. Paired tags, void elements (`<br>`, `<br />`), and tags with attributes stay protected markup.
+_Avoid_: tag-in-prose, prose tag
+
+## Porting
+
+Upstream is pangu.js v9. `src/pangu/_core.py` deliberately stays js-shaped — same UPPER_SNAKE pattern names, same load-bearing pipeline order — so each upstream release ports as a mechanical diff; do not "clean it up" (see `docs/adr/0001-traceable-core-pythonic-surface.md`). The public surface (module functions, argparse CLI, packaging) is idiomatic Python and deviates deliberately. The 1:1 test suite in `tests/core/` (mirroring pangu.js `tests/shared/`) is the parity spec.
+
+## Agent Skill Overrides
+
+**handoff**: write handoff documents to `./tmp/handoff-<topic>.md` (repo root) instead of the OS temp directory, so they survive a reboot. `/tmp/` is already gitignored via `~/.gitignore_global`; no further ignore rule needed.
