@@ -1,4 +1,4 @@
-name: Run Tests
+name: CI
 
 on:
   push:
@@ -34,10 +34,10 @@ jobs:
       - name: Run dependency audit
         run: uv audit
 
-      - name: Run linters
+      - name: Run lint
         run: make lint
 
-      - name: Run type checker
+      - name: Run typecheck
         run: make typecheck
 
   tests:
