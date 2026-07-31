@@ -3,7 +3,7 @@ name = "pangu"
 version = "5.0.0"
 description = "Paranoid text spacing for good readability, to automatically insert whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols)."
 authors = [{ name = "Vinta Chen", email = "vinta.chen@gmail.com" }]
-readme = "README.rst"
+readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
 dependencies = []
