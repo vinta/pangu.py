@@ -87,6 +87,10 @@ allowed-confusables = ["，", "：", "、", "！", "？", "（", "）"]
     "RUF002",
     "RUF003",
     "E501",    # 1:1 ported test cases keep pangu.js line shapes
+    "INP001",  # pytest convention: no __init__.py in test directories
+    "ERA001",  # commented-out asserts are 1:1 ports of pangu.js FIXME cases
+    "TD",      # FIXME comments are 1:1 ports of pangu.js FIXME cases
+    "FIX",
 ]
 
 [tool.ruff.format]
