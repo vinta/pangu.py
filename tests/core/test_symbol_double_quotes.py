@@ -12,7 +12,7 @@ def test_handle_symbols_as_quotes():
 
 
 # The per-line pipe/plus readings run after the quote cleanup, so a separator space landing just inside a closing quote must be re-stripped: the first pass emits what a second pass would
-def test_handle_operator_spacing_inside_quotes_idempotently():
+def test_handle_separator_spacing_inside_quotes_idempotently():
     assert spacing_text('"字+"') == '"字 +"'
     assert spacing_text('"字|"') == '"字 |"'
     assert spacing_text('你好"字+"世界') == '你好 "字 +" 世界'
