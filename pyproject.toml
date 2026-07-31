@@ -91,6 +91,8 @@ allowed-confusables = ["，", "：", "、", "！", "？", "（", "）"]
     "ERA001",  # commented-out asserts are 1:1 ports of pangu.js FIXME cases
     "TD",      # FIXME comments are 1:1 ports of pangu.js FIXME cases
     "FIX",
+    "S603",    # subprocess pipelines with trusted, test-built commands
+    "S607",
 ]
 
 [tool.ruff.format]
