@@ -2,6 +2,7 @@
 
 [![PyPI Version](https://img.shields.io/pypi/v/pangu.svg?style=for-the-badge)](https://pypi.org/project/pangu/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/pangu.svg?style=for-the-badge)](https://pypi.org/project/pangu/)
+[![PyPI Downloads](https://img.shields.io/pepy/dt/pangu?style=for-the-badge)](https://pepy.tech/project/pangu)
 
 Paranoid text spacing for good readability, to automatically insert whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).
 
