@@ -55,7 +55,7 @@ Corrected: 心裡想的是 Microservice，手裡做的是 Distributed Monolith
 $ echo "Workaround雖可恥但有用" | pangu-py
 Workaround 雖可恥但有用
 
-$ python -m pangu "聽說桐島rm -rf /*了"
+$ uv run python -m pangu "聽說桐島rm -rf /*了"
 聽說桐島 rm -rf /* 了
 ```
 
