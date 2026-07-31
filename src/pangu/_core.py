@@ -490,6 +490,9 @@ def spacing_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the
     new_text = "\n".join(_spacing_pipes_in_line(line) for line in new_text.split("\n"))
     new_text = "\n".join(_spacing_pluses_in_line(line) for line in new_text.split("\n"))
 
+    # A pipe/plus separator space can land just inside a closing quote; re-strip so the first pass already emits what a second pass would (idempotency)
+    new_text = FIX_QUOTE_ANY_QUOTE.sub(r"\1\2\3", new_text)
+
     new_text = compound_word_manager.restore(new_text)
 
     new_text = CJK_LEFT_BRACKET.sub(r"\1 \2", new_text)

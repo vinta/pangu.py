@@ -11,6 +11,15 @@ def test_handle_symbols_as_quotes():
     assert spacing_text('head "中文123漢字" tail') == 'head "中文 123 漢字" tail'
 
 
+# The per-line pipe/plus readings run after the quote cleanup, so a separator space landing just inside a closing quote must be re-stripped: the first pass emits what a second pass would
+def test_handle_operator_spacing_inside_quotes_idempotently():
+    assert spacing_text('"字+"') == '"字 +"'
+    assert spacing_text('"字|"') == '"字 |"'
+    assert spacing_text('你好"字+"世界') == '你好 "字 +" 世界'
+    assert spacing_text('前面"字|"後面') == '前面 "字 |" 後面'
+    assert spacing_text('多行"字+"\n下行"字|"') == '多行 "字 +"\n下行 "字 |"'
+
+
 def test_handle_adjacent_to_cjk():
     assert spacing_text('我們也不可以說"We invited the reverend to dinner."') == '我們也不可以說 "We invited the reverend to dinner."'
     assert spacing_text('"We invited the Rev. Darling."我們也不可以說') == '"We invited the Rev. Darling." 我們也不可以說'
