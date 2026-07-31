@@ -59,16 +59,15 @@ AN = "A-Za-z0-9"
 A = "A-Za-z"
 UPPER_AN = "A-Z0-9"  # For FIX_CJK_COLON_ANS
 
-# Operators - note the different sets!
+# Operators. Each rule uses a different set
 OPERATORS_BASE = r"\+\*=&"
 OPERATORS_WITH_HYPHEN = rf"{OPERATORS_BASE}\-"  # For CJK_OPERATOR_ANS
-OPERATORS_NO_PLUS = r"\*=&\-"  # For ANS_OPERATOR_CJK only; no + - it attaches to the preceding half-width run as a suffix (Disney+, 18+)
+OPERATORS_NO_PLUS = r"\*=&\-"  # For ANS_OPERATOR_CJK only. No + because + attaches to the preceding half-width run as a suffix (Disney+, 18+)
 GRADE_OPERATORS = r"\+\-\*"  # For single letter grades
 
-# Quotes
 QUOTES = '`"\u05f4'  # Backtick, straight quote, Hebrew punctuation
 
-# Brackets - different sets!
+# Brackets. Each rule uses a different set
 LEFT_BRACKETS_BASIC = r"\(\[\{"  # For AN_LEFT_BRACKET
 RIGHT_BRACKETS_BASIC = r"\)\]\}"  # For RIGHT_BRACKET_AN
 LEFT_BRACKETS_EXTENDED = r"\(\[\{<>\u201c"  # For CJK_LEFT_BRACKET (includes angle brackets + curly quote)
@@ -80,19 +79,17 @@ RIGHT_BRACKETS_EXTENDED = r"\)\]\}<>\u201d"  # For RIGHT_BRACKET_CJK
 ANS_CJK_AFTER = rf"{A}{GREEK_AND_COPTIC}0-9@\$%\^&\*\-\+\\={LATIN_1_SUPPLEMENT_AFTER_NBSP}{NUMBER_FORMS}{DINGBATS}"  # Has @, no punctuation
 ANS_BEFORE_CJK = rf"{A}{GREEK_AND_COPTIC}0-9\$%\^&\*\-\+\\={LATIN_1_SUPPLEMENT_AFTER_NBSP}{NUMBER_FORMS}{DINGBATS}"  # No @ symbol
 
-# File path components - common directories in Unix/project paths
+# Common directory names in Unix and project paths
 FILE_PATH_DIRS = (
     r"home|root|usr|etc|var|opt|tmp|dev|mnt|proc|sys|bin|boot|lib|media|run|sbin|srv|node_modules"
     r"|path|project|src|dist|test|tests|docs|templates|assets|public|static|config|scripts|tools|build|out|target|your|\.claude|\.git|\.vscode"
 )
 FILE_PATH_CHARS = r"[A-Za-z0-9_\-\.@\+\*]+"
 
-# Unix absolute paths: system dirs + common project paths
-# Examples: /home, /usr/bin, /etc/nginx.conf, /.bashrc, /node_modules/@babel/core, /path/to/your/project
+# Unix absolute paths: system directories and common project paths, for example /home, /usr/bin, /etc/nginx.conf, /.bashrc, /node_modules/@babel/core, /path/to/your/project
 UNIX_ABSOLUTE_FILE_PATH = rf"/(?:\.?(?:{FILE_PATH_DIRS})|\.(?:[A-Za-z0-9_\-]+))(?:/{FILE_PATH_CHARS})*"
 
-# Unix relative paths common in documentation and blog posts
-# Examples: src/main.py, dist/index.js, test/spec.js, ./.claude/CLAUDE.md, templates/*.html
+# Unix relative paths that are common in documentation and blog posts, for example src/main.py, dist/index.js, test/spec.js, ./.claude/CLAUDE.md, templates/*.html
 UNIX_RELATIVE_FILE_PATH = rf"(?:\./)?(?:{FILE_PATH_DIRS})(?:/{FILE_PATH_CHARS})+"
 
 # Windows paths: C:\Users\name\, D:\Program Files\, C:\Windows\System32
@@ -100,50 +97,39 @@ WINDOWS_FILE_PATH = r"[A-Z]:\\(?:[A-Za-z0-9_\-\. ]+\\?)+"
 
 ANY_CJK = re.compile(rf"[{CJK}]")
 
-# Handle punctuation after CJK - add space but don't convert to full-width
-# Support multiple consecutive punctuation marks
-# Only add space if followed by CJK, letters, or numbers (not at end of text or before same punctuation)
+# A punctuation run after CJK gets a trailing space and never converts to full-width. Space only when CJK, a letter, or a digit follows, so nothing changes at the end of the text
 CJK_PUNCTUATION = re.compile(rf"([{CJK}])([!;,\?:]+)(?=[{CJK}{AN}])")
-# Handle punctuation directly before CJK - add space after the punctuation run,
-# whatever precedes it (no left anchor). An already-typed '前面 ,後面' shape is a
-# typo, not preserved. CJK_PUNCTUATION above still owns colon and punctuation-before-AN
+# A punctuation run directly before CJK gets a space after it, whatever sits on its left (no left anchor). An already-typed 'CJK ,CJK' shape is a typo, not preserved. See pangu.js ADR 0007
+# CJK_PUNCTUATION still owns colon and punctuation before letters and digits
 PUNCTUATION_CJK = re.compile(rf"([!;,\?]+)(?=[{CJK}])")
-# Handle tilde separately for special cases like ~=
-# Only add space if followed by CJK, letters, or numbers (not at end of text)
+# Tilde has its own rule so ~= stays intact. Space only when CJK, a letter, or a digit follows
 CJK_TILDE = re.compile(rf"([{CJK}])(~+)(?!=)(?=[{CJK}{AN}])")
 CJK_TILDE_EQUALS = re.compile(rf"([{CJK}])(~=)")
-# Handle period separately to avoid matching file extensions, multiple dots, and file paths
-# Note: Multiple dots are handled by DOTS_CJK pattern first
-# Only add space if followed by CJK, letters, or numbers (not at end of text)
+# Period has its own rule so file extensions, dot runs, and file paths stay intact; DOTS_CJK handles runs of dots first. Space only when CJK, a letter, or a digit follows
 CJK_PERIOD = re.compile(rf"([{CJK}])(\.)(?![{AN}\./])(?=[{CJK}{AN}])")
-# Handle period between AN and CJK - avoid file extensions
 AN_PERIOD_CJK = re.compile(rf"([{AN}])(\.)([{CJK}])")
-# Handle colon between AN and CJK
 AN_COLON_CJK = re.compile(rf"([{AN}])(:)([{CJK}])")
 DOTS_CJK = re.compile(rf"([\.]{{2,}}|\u2026)([{CJK}])")
-# Special case for colon before uppercase letters/parentheses (convert to full-width)
+# The only case where a colon converts to full-width: after CJK, before an uppercase letter, a digit, or a parenthesis
 FIX_CJK_COLON_ANS = re.compile(rf"([{CJK}])\:([{UPPER_AN}\(\)])")
 
-# The symbol part does not include '
+# The quote class deliberately excludes ' because single quotes have their own rules
 CJK_QUOTE = re.compile(rf"([{CJK}])([{QUOTES}])")
 QUOTE_CJK = re.compile(rf"([{QUOTES}])([{CJK}])")
 # The content class is [\s\S] rather than . so a quoted segment that spans a line break still pairs with its own closing quote. HTML source wrapping puts newlines mid-sentence, and with . that
 # closing quote is unreachable, so the scan resyncs on the next quote, pairs closing-to-opening and strips the spaces outside the quotes instead of inside
 FIX_QUOTE_ANY_QUOTE = re.compile(rf"([{QUOTES}]+)[ ]*([\s\S]+?)[ ]*([{QUOTES}]+)")
 
-# Handle curly quotes with alphanumeric characters
-# These patterns should only apply to curly quotes, not straight quotes
-# Straight quotes are already handled by CJK_QUOTE, QUOTE_CJK and FIX_QUOTE_ANY_QUOTE
-QUOTE_AN = re.compile(rf"([\u201d])([{AN}])")  # Only closing curly quotes + AN
+# Curly quotes only: CJK_QUOTE, QUOTE_CJK, and FIX_QUOTE_ANY_QUOTE already handle straight quotes
+QUOTE_AN = re.compile(rf"([\u201d])([{AN}])")
 
-# Special handling for straight quotes followed by alphanumeric after CJK
-# This catches patterns like: CJK"ABC where the quote appears to be closing a quoted CJK phrase
+# A straight quote between CJK and AN (CJK"AN) reads as closing a quoted CJK phrase, so the space goes after the quote
 CJK_QUOTE_AN = re.compile(rf'([{CJK}])(")([{AN}])')
 
 CJK_SINGLE_QUOTE_BUT_POSSESSIVE = re.compile(rf"([{CJK}])('[^s])")
 SINGLE_QUOTE_CJK = re.compile(rf"(')([{CJK}])")
 FIX_POSSESSIVE_SINGLE_QUOTE = re.compile(rf"([{AN}{CJK}])( )('s)")
-# Pattern to match single quotes around pure CJK text (no spaces, no other characters)
+# Single quotes whose content is only CJK characters
 SINGLE_QUOTE_PURE_CJK = re.compile(rf"(')([{CJK}]+)(')")
 
 HASH_ANS_CJK_HASH = re.compile(rf"([{CJK}])(#)([{CJK}]+)(#)([{CJK}])")
@@ -154,10 +140,8 @@ HASH_CJK = re.compile(rf"(([^ \u00a0])#)([{CJK}])")
 # In file path context (multiple slashes), only a final hashtag not preceded by a slash gets a space
 CJK_FINAL_HASHTAG = re.compile(rf"([^/])([{CJK}])(#[A-Za-z0-9]+)$")
 
-# The symbol part only includes + - * = & (excluding | / < >)
-# Only direct CJK contact makes a symbol an operator: a symbol between two half-width
-# characters binds them into a joiner token (A+B, a=1, S&P) and never gets spaces,
-# so there is deliberately no between-half-width rule here
+# The operator set is + - * = & only (no | / < >). Only direct CJK contact makes a symbol an operator: a symbol between two half-width characters binds them into a joiner token (A+B, a=1, S&P)
+# and never gets spaces, so there is deliberately no between-half-width rule here
 CJK_OPERATOR_ANS = re.compile(rf"([{CJK}])([{OPERATORS_WITH_HYPHEN}])([{AN}])")
 ANS_OPERATOR_CJK = re.compile(rf"([{AN}])([{OPERATORS_NO_PLUS}])([{CJK}])")
 
@@ -175,54 +159,46 @@ PIPE_SEPARATOR = re.compile(r"([^\s|])[ ]*(\|+)[ ]*(?=[^\s|])")
 PLUS_CJK_CONTACT = re.compile(rf"[{CJK}]\+|\+[{CJK}]")
 PLUS_SEPARATOR = re.compile(r"(?<=[^\s+])\+(?=[^\s+])")
 
-# Special handling for single letter grades/ratings (A+, B-, C*) before CJK
-# These should have space after the operator, not before
-# Use word boundary to ensure it's a single letter, not part of a longer word
+# Single-letter grades (A+, B-, C*) before CJK get the space after the symbol, not before. The \b keeps the letter single, not the tail of a longer word
 # (re.ASCII: js \b is ASCII-word-based; Python's default \b counts CJK as word characters)
 SINGLE_LETTER_GRADE_CJK = re.compile(rf"\b([{A}])([{GRADE_OPERATORS}])([{CJK}])", re.ASCII)
 
 # Affix readings attach a symbol to its half-width side at a CJK boundary, overriding the operator reading
 # Sign: + or - attaches to following digits (+886, -5)
 CJK_SIGN_DIGIT = re.compile(rf"([{CJK}])([\+\-])([0-9])")
-# Flag: - attaches to a following single lowercase letter (-m)
-# [a-z] keeps a capitalized word on the operator reading and the trailing \b keeps a longer lowercase word there too
+# Flag: - attaches to a following single lowercase letter (-m). [a-z] keeps a capitalized word on the operator reading, and the trailing \b keeps a longer lowercase word there too
 CJK_HYPHEN_FLAG = re.compile(rf"([{CJK}])(\-)([a-z])\b", re.ASCII)
 # Suffix: + attaches to a preceding half-width run (Disney+, 18+)
 AN_PLUS_CJK = re.compile(rf"([{AN}])(\+)([{CJK}])")
 
-# Special handling for < and > as comparison operators (not brackets)
+# < and > as comparison operators, not brackets
 CJK_LESS_THAN = re.compile(rf"([{CJK}])(<)([{AN}])")
 LESS_THAN_CJK = re.compile(rf"([{AN}])(<)([{CJK}])")
 CJK_GREATER_THAN = re.compile(rf"([{CJK}])(>)([{AN}])")
 GREATER_THAN_CJK = re.compile(rf"([{AN}])(>)([{CJK}])")
 
-# Bracket patterns: ( ) [ ] { } and also < > (though < > are also handled as operators separately)
-# Note: The curly quotes “ ” (\u201c \u201d) appear in CJK_LEFT_BRACKET/RIGHT_BRACKET_CJK but are primarily handled in the patterns below
+# Bracket patterns: ( ) [ ] { } plus < >, which also act as comparison operators
+# The curly quotes \u201c and \u201d appear in CJK_LEFT_BRACKET/RIGHT_BRACKET_CJK, but the paired-quote patterns handle them primarily
 CJK_LEFT_BRACKET = re.compile(rf"([{CJK}])([{LEFT_BRACKETS_EXTENDED}])")
 RIGHT_BRACKET_CJK = re.compile(rf"([{RIGHT_BRACKETS_EXTENDED}])([{CJK}])")
 ANS_CJK_LEFT_BRACKET_ANY_RIGHT_BRACKET = re.compile(rf"([{AN}{CJK}])[ ]*([\u201c])([{AN}{CJK}\-_ ]+)([\u201d])")
 LEFT_BRACKET_ANY_RIGHT_BRACKET_ANS_CJK = re.compile(rf"([\u201c])([{AN}{CJK}\-_ ]+)([\u201d])[ ]*([{AN}{CJK}])")
-# Some input habits type both quotes of a pair as closing curly quotes (\u201d), e.g. 男主”见路不走”
-# A ” only opens a ”…” pair when no unclosed “ precedes it on the line, otherwise it
-# closes that “. Runs after RIGHT_BRACKET_CJK, so the [ ]* after the opener strips the space that rule
-# just added inside the pair.
-# js expresses "no unclosed “ precedes it" as the variable-length lookbehind
-# (?<![\u201c][^\u201c\u201d\n]*), which stdlib re rejects; _sub_ans_cjk_right_quote_any_right_quote()
-# applies this pattern and checks that left context in code
+# Some input habits type both quotes of a pair as closing curly quotes (\u201d): the shape CJK\u201dCJK\u201d appears where CJK\u201cCJK\u201d was meant
+# A \u201d only opens a \u201d...\u201d pair when no unclosed \u201c precedes it on the line (the lookbehind), otherwise it closes that \u201c
+# Runs after RIGHT_BRACKET_CJK, so the [ ]* after the opener strips the space that rule just added inside the pair
+# js expresses "no unclosed \u201c precedes it" as the variable-length lookbehind (?<![\u201c][^\u201c\u201d\n]*), which stdlib re rejects;
+# _sub_ans_cjk_right_quote_any_right_quote() applies this pattern and checks that left context in code
 ANS_CJK_RIGHT_QUOTE_ANY_RIGHT_QUOTE = re.compile(rf"([{AN}{CJK}])[ ]*([\u201d])[ ]*([{AN}{CJK}\-_ ]+?)[ ]*([\u201d])")
 
-# js guards this with the variable-length lookbehind (?<!\.[A-Za-z0-9]*): no spacing when the
-# alphanumeric run before the bracket hangs off a dot (file.py(...)). stdlib re rejects it, so
-# _sub_an_left_bracket() applies this pattern and checks that left context in code
+# A dotted name keeps its call parenthesis tight (`Math.floor(x)`, `array.map(fn)`), a bare name does not (`foo (x)`)
+# js guards this with the variable-length lookbehind (?<!\.[A-Za-z0-9]*), which stdlib re rejects; _sub_an_left_bracket() applies this pattern and checks that left context in code
 AN_LEFT_BRACKET = re.compile(rf"([{AN}])([{LEFT_BRACKETS_BASIC}])")
 RIGHT_BRACKET_AN = re.compile(rf"([{RIGHT_BRACKETS_BASIC}])([{AN}])")
 
-# Special patterns for filesystem paths after CJK
 CJK_UNIX_ABSOLUTE_FILE_PATH = re.compile(rf"([{CJK}])({UNIX_ABSOLUTE_FILE_PATH})")
 CJK_UNIX_RELATIVE_FILE_PATH = re.compile(rf"([{CJK}])({UNIX_RELATIVE_FILE_PATH})")
 CJK_WINDOWS_PATH = re.compile(rf"([{CJK}])({WINDOWS_FILE_PATH})")
 
-# Pattern for Unix paths ending with / followed by CJK
 UNIX_ABSOLUTE_FILE_PATH_SLASH_CJK = re.compile(rf"({UNIX_ABSOLUTE_FILE_PATH}/)([{CJK}])")
 UNIX_RELATIVE_FILE_PATH_SLASH_CJK = re.compile(rf"({UNIX_RELATIVE_FILE_PATH}/)([{CJK}])")
 
@@ -233,19 +209,13 @@ S_A = re.compile(rf"(%)([{A}])")
 
 MIDDLE_DOT = re.compile(r"([ ]*)([\u00b7\u2022\u2027])([ ]*)")
 
-# A bare unpaired non-void tag amid prose is a tag mention,
-# not markup: it reads as one unit and is spaced from CJK it directly touches.
-# A trailing self-closing slash is still bare, but void
-# elements render on their own (<br> or <hr>), so they stay markup even unpaired
+# A bare unpaired non-void tag amid prose is a tag mention, not markup: it reads as one unit and is spaced from CJK it directly touches
+# A trailing self-closing slash is still bare, but void elements render on their own (<br> or <hr>), so they stay markup even unpaired
 VOID_HTML_TAGS = frozenset({"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"})
 BARE_HTML_TAG = re.compile(r"^<([a-zA-Z][a-zA-Z0-9]*)\s*/?>$")
 CLOSING_HTML_TAG = re.compile(r"</([a-zA-Z][a-zA-Z0-9]*)")
 
-# More specific HTML tag pattern:
-# - Opening tags: <tagname ...> or <tagname>
-# - Closing tags: </tagname>
-# - Self-closing tags: <tagname ... />
-# This pattern ensures we only match actual HTML tags, not just any < > content
+# Matches only opening, closing, and self-closing tags with a real tag name, so stray < > content is not read as a tag
 HTML_TAG_PATTERN = re.compile(r"</?[a-zA-Z][a-zA-Z0-9]*(?:\s+[^>]*)?>")
 # Attribute values inside a tag (re.ASCII: js \w is ASCII)
 HTML_TAG_ATTRIBUTE = re.compile(r'(\w+)="([^"]*)"', re.ASCII)
@@ -254,23 +224,15 @@ HTML_TAG_ATTRIBUTE = re.compile(r'(\w+)="([^"]*)"', re.ASCII)
 CJK_HTML_TAG_MENTION = re.compile(rf"([{CJK}])(?=\ue002)")
 HTML_TAG_MENTION_CJK = re.compile(rf"(?<=\ue003)([{CJK}])")
 
-# Protect backtick content from quote processing but allow spacing around backticks
 BACKTICK_CONTENT = re.compile(r"`([^`]+)`")
 
-# Pattern to detect compound words: alphanumeric-alphanumeric combinations that look like compound words/product names
-# Examples: state-of-the-art, machine-learning, GPT-4o, real-time, end-to-end, gpt-4o, GPT-5, claude-4-opus
-# Match: word-word(s) where at least one part contains lowercase letters OR contains mix of letters and numbers (like GPT-5)
+# Hyphen-joined alphanumeric runs that read as one name, for example state-of-the-art, GPT-4o, claude-4-opus. At least one part must contain a lowercase letter or mix letters with digits (GPT-5)
 COMPOUND_WORD_PATTERN = re.compile(
     r"\b(?:[A-Za-z0-9]*[a-z][A-Za-z0-9]*-[A-Za-z0-9]+|[A-Za-z0-9]+-[A-Za-z0-9]*[a-z][A-Za-z0-9]*|[A-Za-z]+-[0-9]+|[A-Za-z]+[0-9]+-[A-Za-z0-9]+)(?:-[A-Za-z0-9]+)*\b",
     re.ASCII,
 )
 
-# Brackets: <fcontentl> (fcontentl) [fcontentl] {fcontentl}
-# f: the first character inside the brackets
-# l: the last character inside the brackets
-# content: the content inside the brackets but exclude the first and last characters
-# DO NOT change the first and last characters inside brackets AT ALL
-# ONLY spacing the content between them
+# Used by _fix_bracket_spacing() to strip the spaces just inside a bracket pair; everything else between the brackets stays unchanged
 BRACKET_PATTERNS = [
     (re.compile(r"<([^<>]*)>"), "<", ">"),
     (re.compile(r"\(([^()]*)\)"), "(", ")"),
@@ -285,8 +247,7 @@ _AN_CHARS = frozenset("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
 class PlaceholderReplacer:
     """Stores text snippets and swaps them for opaque indexed placeholders until restore."""
 
-    # Instances are created per spacing_text() call with a handful of fixed
-    # configs, so compiled patterns are shared across instances
+    # Every spacing_text() call creates instances from the same few fixed configs, so compiled patterns are cached and shared across instances
     _pattern_cache: ClassVar[dict[str, re.Pattern[str]]] = {}
 
     def __init__(self, placeholder: str, start_delimiter: str, end_delimiter: str) -> None:
@@ -377,20 +338,15 @@ def _sub_an_left_bracket(text: str) -> str:
 def _spacing_hashtags_in_line(line: str) -> str:
     # Slash reading is per line, so each line's slash count decides its own hashtag behavior
     if line.count("/") <= 1:
-        # Single or no slash - apply normal hashtag spacing
         line = CJK_HASH.sub(r"\1 \2", line)
         return HASH_CJK.sub(r"\1 \3", line)
-    # Multiple slashes - skip hashtag processing to preserve path structure
-    # But add space before final hashtag if it's not preceded by a slash
+    # Multiple slashes read as a path: no hashtag spacing except a final hashtag not preceded by a slash
     return CJK_FINAL_HASHTAG.sub(r"\1\2 \3", line, count=1)
 
 
 def _spacing_slashes_in_line(line: str) -> str:
-    # Slash reading is per line: the line's only slash acts as an operator when CJK
-    # touches it. A slash between half-width characters is a slash token and binds
-    # tight, so no rule fires on it and file paths need no protection here (their
-    # CJK edges were already spaced by the path rules above). Repeated slashes read
-    # as a file path or a list - do nothing (no spaces)
+    # Slash reading is per line: the line's only slash acts as an operator when CJK touches it. Repeated slashes read as a file path or a list and get no spaces
+    # A slash between half-width characters binds tight as a slash token, so no rule fires on it; file paths need no extra protection because the path rules already spaced their CJK edges
     if line.count("/") != 1:
         return line
     line = CJK_SLASH_CJK.sub(r"\1 \2 \3", line)
@@ -399,8 +355,7 @@ def _spacing_slashes_in_line(line: str) -> str:
 
 
 def _spacing_pipes_in_line(line: str) -> str:
-    # Pipe reading is per line: a pipe in direct CJK contact makes every pipe on the
-    # line a separator with spaces on both sides (作詞 | 林夕, concatenated page titles).
+    # Pipe reading is per line: a pipe in direct CJK contact makes every pipe on the line a separator with spaces on both sides (CJK | CJK, as in concatenated page titles)
     # A line whose pipes touch no CJK keeps them tight as joiner tokens (x|y, ps aux|grep node)
     if not PIPE_CJK_CONTACT.search(line):
         return line
@@ -416,15 +371,13 @@ def _spacing_pluses_in_line(line: str) -> str:
 
 
 def _fix_bracket_spacing(text: str) -> str:
-    # Fix spacing inside brackets according to the above rules:
-    # Ensure no unwanted spaces immediately after opening or before closing brackets
+    # Strip the spaces that earlier rules left just inside a bracket pair: no space after an opening bracket or before a closing bracket
     for pattern, open_bracket, close_bracket in BRACKET_PATTERNS:
 
         def replace(match: re.Match[str], open_bracket: str = open_bracket, close_bracket: str = close_bracket) -> str:
             inner_content = match.group(1)
             if not inner_content:
                 return f"{open_bracket}{close_bracket}"
-            # Remove spaces at the very beginning and end of content
             trimmed_content = BRACKET_INNER_SPACES.sub("", inner_content)
             return f"{open_bracket}{trimmed_content}{close_bracket}"
 
@@ -439,16 +392,14 @@ def spacing_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the
 
     new_text = text
 
-    # Protect backtick content from quote processing but allow spacing around backticks
+    # Hide backtick content from the quote rules; the backticks themselves still get spacing
     backtick_manager = PlaceholderReplacer("BACKTICK_CONTENT_", "\ue004", "\ue005")
     new_text = BACKTICK_CONTENT.sub(lambda match: f"`{backtick_manager.store(match.group(1))}`", new_text)
 
-    # Initialize placeholder managers
     html_tag_manager = PlaceholderReplacer("HTML_TAG_PLACEHOLDER_", "\ue000", "\ue001")
     mentioned_tag_manager = PlaceholderReplacer("HTML_TAG_MENTION_", "\ue002", "\ue003")
     has_html_tags = False
 
-    # Early return for HTML processing if no HTML tags present
     if "<" in new_text:
         has_html_tags = True
 
@@ -466,53 +417,38 @@ def spacing_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the
             processed_tag = HTML_TAG_ATTRIBUTE.sub(lambda attr_match: f'{attr_match.group(1)}="{spacing_text(attr_match.group(2))}"', tag)
             return html_tag_manager.store(processed_tag)
 
-        # Replace all HTML tags with placeholders, but process attribute values
+        # Hide every real tag behind a placeholder; attribute values get spacing first
         new_text = HTML_TAG_PATTERN.sub(replace_html_tag, new_text)
 
-    # Handle multiple dots first (before single period)
+    # Dot runs go first, before the single-period rule
     new_text = DOTS_CJK.sub(r"\1 \2", new_text)
 
-    # Handle punctuation after CJK - add space but don't convert to full-width
     new_text = CJK_PUNCTUATION.sub(r"\1\2 ", new_text)
-    # Handle punctuation directly before CJK
     new_text = PUNCTUATION_CJK.sub(r"\1 ", new_text)
-    # Handle tilde separately for special cases
     new_text = CJK_TILDE.sub(r"\1\2 ", new_text)
     new_text = CJK_TILDE_EQUALS.sub(r"\1 \2 ", new_text)
-    # Handle period separately to avoid file extensions
     new_text = CJK_PERIOD.sub(r"\1\2 ", new_text)
     new_text = AN_PERIOD_CJK.sub(r"\1\2 \3", new_text)
-    # Handle colon between AN and CJK
     new_text = AN_COLON_CJK.sub(r"\1\2 \3", new_text)
-    # Only convert colon to full-width in specific cases (before uppercase/parentheses)
     new_text = FIX_CJK_COLON_ANS.sub(r"\1：\2", new_text)
 
     new_text = CJK_QUOTE.sub(r"\1 \2", new_text)
     new_text = QUOTE_CJK.sub(r"\1 \2", new_text)
     new_text = FIX_QUOTE_ANY_QUOTE.sub(r"\1\2\3", new_text)
 
-    # Handle quotes with alphanumeric - closing quotes followed by AN need space
     new_text = QUOTE_AN.sub(r"\1 \2", new_text)
-    # Opening quotes preceded by AN don't need space (they're handled by other patterns)
-
-    # Handle CJK followed by closing quote followed by alphanumeric
     new_text = CJK_QUOTE_AN.sub(r"\1\2 \3", new_text)
 
-    # Handle single quotes more intelligently
-    # First, handle possessive case
     new_text = FIX_POSSESSIVE_SINGLE_QUOTE.sub(r"\1's", new_text)
 
-    # Process single quotes around pure CJK text differently from mixed content
+    # Quoted pure-CJK content keeps its quotes tight, so hide it before the single-quote rules run
     single_quote_cjk_manager = PlaceholderReplacer("SINGLE_QUOTE_CJK_PLACEHOLDER_", "\ue030", "\ue031")
 
-    # Protect pure CJK content in single quotes
     new_text = SINGLE_QUOTE_PURE_CJK.sub(lambda match: single_quote_cjk_manager.store(match.group(0)), new_text)
 
-    # Now process other single quote patterns
     new_text = CJK_SINGLE_QUOTE_BUT_POSSESSIVE.sub(r"\1 \2", new_text)
     new_text = SINGLE_QUOTE_CJK.sub(r"\1 \2", new_text)
 
-    # Restore protected pure CJK content
     new_text = single_quote_cjk_manager.restore(new_text)
 
     # HASH_ANS_CJK_HASH pattern needs at least 5 characters
@@ -524,11 +460,9 @@ def spacing_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the
     # Protect compound words from operator spacing
     compound_word_manager = PlaceholderReplacer("COMPOUND_WORD_PLACEHOLDER_", "\ue010", "\ue011")
 
-    # Store compound words and replace with placeholders
     new_text = COMPOUND_WORD_PATTERN.sub(lambda match: compound_word_manager.store(match.group(0)), new_text)
 
-    # Handle single letter grades (A+, B-, etc.) before general operator rules
-    # This ensures "A+的" becomes "A+ 的" not "A + 的"
+    # Single-letter grades run before the general operator rules so A+CJK becomes A+ CJK, not A + CJK
     new_text = SINGLE_LETTER_GRADE_CJK.sub(r"\1\2 \3", new_text)
 
     # Affix readings run before the operator rules so the symbol stays attached to its half-width side
@@ -539,18 +473,15 @@ def spacing_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the
     new_text = CJK_OPERATOR_ANS.sub(r"\1 \2 \3", new_text)
     new_text = ANS_OPERATOR_CJK.sub(r"\1 \2 \3", new_text)
 
-    # Handle < and > as comparison operators
     new_text = CJK_LESS_THAN.sub(r"\1 \2 \3", new_text)
     new_text = LESS_THAN_CJK.sub(r"\1 \2 \3", new_text)
     new_text = CJK_GREATER_THAN.sub(r"\1 \2 \3", new_text)
     new_text = GREATER_THAN_CJK.sub(r"\1 \2 \3", new_text)
 
-    # Add space before filesystem paths after CJK
     new_text = CJK_UNIX_ABSOLUTE_FILE_PATH.sub(r"\1 \2", new_text)
     new_text = CJK_UNIX_RELATIVE_FILE_PATH.sub(r"\1 \2", new_text)
     new_text = CJK_WINDOWS_PATH.sub(r"\1 \2", new_text)
 
-    # Add space after Unix paths ending with / before CJK
     new_text = UNIX_ABSOLUTE_FILE_PATH_SLASH_CJK.sub(r"\1 \2", new_text)
     new_text = UNIX_RELATIVE_FILE_PATH_SLASH_CJK.sub(r"\1 \2", new_text)
 
@@ -558,7 +489,6 @@ def spacing_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the
     new_text = "\n".join(_spacing_pipes_in_line(line) for line in new_text.split("\n"))
     new_text = "\n".join(_spacing_pluses_in_line(line) for line in new_text.split("\n"))
 
-    # Restore compound words from placeholders
     new_text = compound_word_manager.restore(new_text)
 
     new_text = CJK_LEFT_BRACKET.sub(r"\1 \2", new_text)
@@ -587,7 +517,6 @@ def spacing_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the
         new_text = mentioned_tag_manager.restore(new_text)
         new_text = html_tag_manager.restore(new_text)
 
-    # Restore backtick content
     return backtick_manager.restore(new_text)
 
 
