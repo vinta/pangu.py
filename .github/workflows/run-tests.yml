@@ -31,6 +31,9 @@ jobs:
       - name: Install dependencies
         run: uv sync --locked
 
+      - name: Run dependency audit
+        run: uv audit
+
       - name: Run linters
         run: make lint
 
