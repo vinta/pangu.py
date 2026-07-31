@@ -12,6 +12,11 @@ Deviations forced by Python's `re`:
   patterns relying on them compile with `re.ASCII`
 - stdlib `re` rejects variable-length lookbehind, so AN_LEFT_BRACKET and
   ANS_CJK_RIGHT_QUOTE_ANY_RIGHT_QUOTE check their left context in code instead
+
+Known, accepted delta: the few remaining `\\s` uses (PIPE_SEPARATOR, PLUS_SEPARATOR,
+BARE_HTML_TAG, HTML_TAG_PATTERN) keep js/py whitespace semantics differences —
+js counts U+FEFF as whitespace, Python counts U+001C-U+001F — which no ported test
+observes; explicit classes are used only where behavior demanded it (CJK_HASH).
 """
 
 import os
