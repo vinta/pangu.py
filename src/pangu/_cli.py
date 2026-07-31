@@ -15,15 +15,29 @@ from collections.abc import Sequence
 
 from pangu._core import spacing_file, spacing_text
 
+_DESCRIPTION = """\
+pangu.py -- Paranoid text spacing for good readability, to automatically
+insert whitespace between CJK and half-width characters (alphabetical
+letters, numerical digits and symbols)."""
+
+_EPILOG = """\
+notes:
+  - an explicit argument wins over piped stdin; stdin is read only when
+    no argument is given
+  - -c/--check exits 0 when the text already has proper spacing and 1
+    when it does not (the corrected text goes to stderr), and composes
+    with piped stdin
+  - usage errors exit 2 (argparse convention; pangu.js exits 1)"""
+
 
 def _build_parser() -> argparse.ArgumentParser:
     from pangu import __version__  # noqa: PLC0415 import-outside-top-level — the package root imports this module, so the top level would be circular
 
     parser = argparse.ArgumentParser(
         prog="pangu",
-        description=(
-            "pangu.py -- Paranoid text spacing for good readability, to automatically insert whitespace between CJK and half-width characters (alphabetical letters, numerical digits and symbols)."
-        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=_DESCRIPTION,
+        epilog=_EPILOG,
     )
     # self-identifying so `pangu -v` disambiguates from pangu.js when both are installed
     parser.add_argument("-v", "--version", action="version", version=f"pangu.py {__version__}")

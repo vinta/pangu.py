@@ -43,27 +43,23 @@ The engine is CPU-bound regex work, so there is no async API. From async code, u
 
 ### In CLI
 
-```console
-$ pangu "請使用uname -m指令來檢查你的Linux作業系統是32位元或是[敏感词已被屏蔽]位元"
+```bash
+$ pangu-py "請使用uname -m指令來檢查你的Linux作業系統是32位元或是[敏感词已被屏蔽]位元"
 請使用 uname -m 指令來檢查你的 Linux 作業系統是 32 位元或是 [敏感词已被屏蔽] 位元
 
-$ pangu -t "為什麼小明有問題都不Google？因為他有Bing"
+$ pangu-py -t "為什麼小明有問題都不Google？因為他有Bing"
 為什麼小明有問題都不 Google？因為他有 Bing
 
-$ pangu -f path/to/file.txt
+$ pangu-py -f path/to/file.txt
 未來的某一天，Gmail 配備的 AI 可能會得出一個結論：想要消滅垃圾郵件最好的辦法就是消滅人類
 
-$ pangu -c "心裡想的是Microservice，手裡做的是Distributed Monolith"; echo $?
+$ pangu-py -c "心裡想的是Microservice，手裡做的是Distributed Monolith"; echo $?
 Corrected: 心裡想的是 Microservice，手裡做的是 Distributed Monolith
 1
 
-$ echo "心裡想的是Microservice，手裡做的是Distributed Monolith" | pangu
+$ echo "心裡想的是Microservice，手裡做的是Distributed Monolith" | pangu-py
 心裡想的是 Microservice，手裡做的是 Distributed Monolith
 
 $ python -m pangu "你從什麼時候開始產生了我沒使用Monkey Patch的錯覺?"
 你從什麼時候開始產生了我沒使用 Monkey Patch 的錯覺?
 ```
-
-- An explicit argument wins over piped stdin; stdin is read only when no argument is given.
-- `-c/--check` exits 0 when the text already has proper spacing and 1 when it does not (the corrected text goes to stderr), and composes with piped stdin.
-- Usage errors exit 2 (argparse convention; pangu.js exits 1).
