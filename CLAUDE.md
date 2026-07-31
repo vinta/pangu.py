@@ -1,7 +1,5 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ## Project Overview
 
 `pangu.py` is a text spacing library that automatically inserts whitespace between CJK (Chinese, Japanese, Korean) characters and half-width characters (alphabetical letters, numerical digits, and symbols). It is a Python port of the pangu.js v9 engine, shipped as a zero-dependency PyPI package with a module API and a CLI.
@@ -33,11 +31,7 @@ uv run pytest -k "test_name" -v                         # Run tests matching a n
 - Spacing rule changes flow downstream from pangu.js: fix or tweak rules upstream first, then port the diff. Read `CONTEXT.md` before touching `_core.py`, and keep it in sync when porting.
 - Commented-out asserts and FIXME comments in `tests/core/` are intentional 1:1 ports of upstream FIXME cases — leave them. The per-file test lint ignores in `pyproject.toml` exist for the same reason; don't widen them casually.
 - The version lives in two places: `pyproject.toml` and `__version__` in `src/pangu/__init__.py`. `tests/test_package.py` fails CI if they drift.
-- Publishing is tag-triggered (`v*`) via GitHub Actions with PyPI Trusted Publishing (OIDC) — never publish locally. The single-job publish shape is a decided trade-off; ADR 0002 is the standing answer, don't re-propose the pack/publish split.
-- The `pangu-py` entry point exists because pangu.js's CLI shadows `pangu` on PATH.
-- Maintain zero runtime dependencies.
 - Write code comments in English with ASCII characters only. Never paste CJK sample text into a comment; describe the shape generically (`CJK | CJK`, `A+CJK`) and use `\uXXXX` escape notation when a specific character matters.
-- Record reversals of documented contracts as ADRs in `docs/adr/`.
 
 ## External Tool Documentation
 
