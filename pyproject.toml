@@ -72,12 +72,10 @@ select = ["ALL"]
 ignore = [
     "D",      # pydocstyle
     "COM812", # trailing comma (formatter conflict)
-    "ISC001", # string concat (formatter conflict)
-    "T20",    # print statements (CLI output)
-    "CPY",    # no copyright notices in this project
+    "CPY001", # copyright notice (license lives in LICENSE, not file headers)
+    "T20",    # print statements (CLI tools)
 ]
-# CJK text in strings, docstrings, and comments is this library's subject matter
-allowed-confusables = ["，", "：", "、", "！", "？", "（", "）"]
+allowed-confusables = ["，", "：", "、", "！", "？", "（", "）"] # CJK text in strings, docstrings, and comments is this library's subject matter
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = [
@@ -98,16 +96,16 @@ allowed-confusables = ["，", "：", "、", "！", "？", "（", "）"]
 ]
 
 [tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
 docstring-code-format = true
 
 [tool.ty.src]
 include = ["src", "tests"]
 
-[tool.ty.terminal]
-error-on-warning = true
-
 [tool.ty.rules]
+blanket-ignore-comment = "error"
+division-by-zero = "error"
+missing-type-argument = "error"
+possibly-missing-attribute = "error"
+possibly-missing-import = "error"
 possibly-unresolved-reference = "error"
 unused-ignore-comment = "error"
