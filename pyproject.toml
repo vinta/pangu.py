@@ -98,9 +98,6 @@ allowed-confusables = ["，", "：", "、", "！", "？", "（", "）"] # CJK te
 [tool.ruff.format]
 docstring-code-format = true
 
-[tool.ty.src]
-include = ["src", "tests"]
-
 [tool.ty.rules]
 blanket-ignore-comment = "error"
 division-by-zero = "error"
