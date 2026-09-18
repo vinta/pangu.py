@@ -159,10 +159,9 @@ MULTI_LETTER_BLOOD_TYPE = "AB|RhD|Rh"
 
 # Product names and tiers take + only; credit ratings and blood types take + or -
 NAME_SUFFIX = rf"(?:(?<![A-Za-z0-9])(?:(?:{PRODUCT_NAME}|{PRODUCT_TIER})\+|(?:{CREDIT_RATING}|{MULTI_LETTER_BLOOD_TYPE})[+-])|(?:{PRODUCT_NAME_IN_CJK})\+)"
-# \Z, not $: the tested slice never ends in a newline, but Python's $ would also match before one
 NAME_SUFFIX_AT_END = re.compile(rf"{NAME_SUFFIX}\Z")
 # Length of the longest name suffix match (CATCHPLAY+). V8 reads NAME_SUFFIX only this far back on its own, while Python's re tries every start position from pos, so the name suffix
-# checks pass this window explicitly. tests/test_core_deviations.py fails if a listed name outgrows it
+# checks pass this window explicitly
 NAME_SUFFIX_MAX_LENGTH = 10
 
 # A closing mark follows the suffix tight; a word or an opening bracket keeps its boundary space
@@ -202,7 +201,6 @@ CJK_SIGN_DIGIT = re.compile(rf"([{CJK}])(\+)([0-9])")
 CJK_HYPHEN_FLAG = re.compile(rf"([{CJK}])(\-)([a-z])\b", re.ASCII)
 # Suffix: + attaches to a preceding whole digit run (18+, 100+, 3.5+). The \b keeps a digit that ends a word (S24+, HDR10+) on the separator reading, see plus reading. Word suffixes are decided
 # by the name list during plus reading. See pangu.js ADR 0024
-# (re.ASCII: js \b is ASCII-word-based; Python's default \b counts CJK as word characters)
 DIGIT_PLUS_CJK = re.compile(rf"\b([0-9]+)(\+)([{CJK}])", re.ASCII)
 
 # < and > as comparison operators, not brackets
@@ -260,7 +258,6 @@ HTML_TAG_PATTERN = re.compile(r"</?[a-zA-Z][a-zA-Z0-9]*(?:\s+[^>]*)?>")
 # Attribute values inside a tag (re.ASCII: js \w is ASCII)
 HTML_TAG_ATTRIBUTE = re.compile(r'(\w+)="([^"]*)"', re.ASCII)
 
-# Spacing at direct CJK contact with a tag mention placeholder (\uE004...\uE005)
 CJK_HTML_TAG_MENTION = re.compile(rf"([{CJK}])(?=\ue004)")
 HTML_TAG_MENTION_CJK = re.compile(rf"(?<=\ue005)([{CJK}])")
 
@@ -406,7 +403,6 @@ def _sub_ans_operator_cjk(text: str) -> str:
     """
 
     def replace(match: re.Match[str]) -> str:
-        # js lookbehind (?<!NAME_SUFFIX) sits right after the operator
         end = match.end(2)
         if NAME_SUFFIX_AT_END.search(text, max(0, end - NAME_SUFFIX_MAX_LENGTH), end):
             return match.group(0)
@@ -423,7 +419,6 @@ def _sub_cjk_ans(text: str) -> str:
     """
 
     def replace(match: re.Match[str]) -> str:
-        # js lookbehind (?<!NAME_SUFFIX) sits right after the ANS character
         end = match.end()
         if NAME_SUFFIX_AT_END.search(text, max(0, end - NAME_SUFFIX_MAX_LENGTH), end):
             return match.group(0)
@@ -614,7 +609,6 @@ def space_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the j
 
     # Restore HTML tags from placeholders (only if HTML processing occurred)
     if has_html_tags:
-        # A tag mention reads as one unit: space it from CJK it directly touches
         new_text = CJK_HTML_TAG_MENTION.sub(r"\1 ", new_text)
         new_text = HTML_TAG_MENTION_CJK.sub(r" \1", new_text)
         new_text = mentioned_tag_manager.restore(new_text)
