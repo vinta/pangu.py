@@ -1,5 +1,9 @@
 # Changelog
 
+## vX.Y.Z / xxxx-xx-xx
+
+- Include `LICENSE` in the wheel and the sdist, and `CHANGELOG.md` in the sdist
+
 ## v6.0.0 / 2026-09-18
 
 - Implement **Paranoid Text Spacing Algorithm v10** (ported from [pangu.js](https://github.com/vinta/pangu.js) `v10.1.1`)

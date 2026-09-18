@@ -5,6 +5,7 @@ description = "Paranoid text spacing for good readability, to automatically inse
 authors = [{ name = "Vinta Chen", email = "vinta.chen@gmail.com" }]
 readme = "README.md"
 license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.8"
 dependencies = []
 keywords = [
@@ -62,6 +63,9 @@ dev = [
     { include-group = "test" },
     { include-group = "lint" },
 ]
+
+[tool.uv.build-backend]
+source-include = ["CHANGELOG.md"]
 
 [tool.uv]
 exclude-newer = "3 days"
