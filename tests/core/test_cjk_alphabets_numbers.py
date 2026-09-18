@@ -41,6 +41,19 @@ def test_handle_number_forms():
     assert spacing_text("中文 Ⅶ 漢字") == "中文 Ⅶ 漢字"
 
 
+# \u2700 - \u27bf
+def test_handle_dingbats_symbols_add_space_between_them_and_cjk():
+    assert spacing_text("剪刀✂符號") == "剪刀 ✂ 符號"
+    assert spacing_text("完成✅了") == "完成 ✅ 了"
+    assert spacing_text("愛心❤符號") == "愛心 ❤ 符號"
+
+
+# FIXME
+# # \ufffd
+# def test_handle_specials_symbols_add_space_between_them_and_cjk():
+#     assert spacing_text("我喜歡在填表單的時候故意加幾個� (U+FFFD)字元，好讓那些工程師懷疑系統有bug") == "我喜歡在填表單的時候故意加幾個 � (U+FFFD) 字元，好讓那些工程師懷疑系統有 bug"
+
+
 # https://symbl.cc/en/unicode-table/#cjk-radicals-supplement
 def test_handle_cjk_radicals_supplement():
     assert spacing_text("abc⻤123") == "abc ⻤ 123"

@@ -59,3 +59,13 @@ def test_handle_misused_quote_pairs():
 # between two quoted segments is then treated as quoted content whose edge spaces get stripped. See #287
 def test_handle_mis_pairing_known_limitation():
     assert spacing_text('Darling." 或 "We') == 'Darling."或" We'
+
+
+# \u201c
+# \u201d
+def test_handle_english_with_symbols():
+    assert spacing_text("阿里云开源“计算王牌”Blink，实时计算时代已来") == "阿里云开源 “计算王牌” Blink，实时计算时代已来"
+
+    assert spacing_text("苹果撤销Facebook“企业证书”后者股价一度短线走低") == "苹果撤销 Facebook “企业证书” 后者股价一度短线走低"
+
+    assert spacing_text("【UCG中字】“數毛社”DF的《戰神4》全新演示解析") == "【UCG 中字】“數毛社” DF 的《戰神 4》全新演示解析"
