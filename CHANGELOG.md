@@ -2,6 +2,7 @@
 
 ## vX.Y.Z / xxxx-xx-xx
 
+- Implement **Paranoid Text Spacing Algorithm v10** (ported from [pangu.js](https://github.com/vinta/pangu.js) `v10.1.1`)
 - Support Python 3.8+
 - Rename `spacing_text()` to `space_text()` and `spacing_file()` to `space_file()`
 

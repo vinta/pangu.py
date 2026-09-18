@@ -1,7 +1,6 @@
 from pangu import space_text
 
 
-# Symbol ! only add space on the right
 def test_handle_symbol():
     assert space_text("前面!") == "前面!"
     assert space_text("前面!!") == "前面!!"
@@ -15,7 +14,11 @@ def test_handle_symbol():
 
     assert space_text("你還在用Yahoo!奇摩？") == "你還在用 Yahoo! 奇摩？"
 
+    assert space_text('! git commit -a -m "蛤"') == '! git commit -a -m "蛤"'
+
     # DO NOT change if already spacing
     assert space_text("前面 ! 後面") == "前面 ! 後面"
     assert space_text("前面! 後面") == "前面! 後面"
-    # assert space_text("前面 !後面") == "前面 !後面"  # Rare cases (basically a typo), ignore
+
+    # Rare cases, ignore
+    # assert space_text("前面 !後面") == "前面 !後面"

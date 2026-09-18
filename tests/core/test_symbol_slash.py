@@ -1,27 +1,27 @@
 from pangu import space_text
 
 
-# When CJK touches the only slash in one line
-def test_handle_symbol_as_operator():
-    assert space_text("前面/後面") == "前面 / 後面"
-    assert space_text("Mollie/陳上進") == "Mollie / 陳上進"
-    assert space_text("陳上進/Mollie") == "陳上進 / Mollie"
-    assert space_text("速度是60公里/小時") == "速度是 60 公里 / 小時"
+def test_handle_symbol_as_separator():
+    assert space_text("前面/後面") == "前面/後面"
+    assert space_text("Vinta/貓咪") == "Vinta/貓咪"
+    assert space_text("貓咪/Vinta") == "貓咪/Vinta"
+    assert space_text("速度是60公里/小時") == "速度是 60 公里/小時"
+    assert space_text("價格是$100/每小時") == "價格是 $100/每小時"
+    assert space_text("我/你\n他/她") == "我/你\n他/她"
+    assert space_text("歡迎光臨/再見\n參考 https://example.com/docs") == "歡迎光臨/再見\n參考 https://example.com/docs"
 
     # DO NOT change if already spacing
     assert space_text("前面 / 後面") == "前面 / 後面"
-    assert space_text("Vinta / Mollie") == "Vinta / Mollie"
-    assert space_text("Mollie / 陳上進") == "Mollie / 陳上進"
-    assert space_text("陳上進 / Mollie") == "陳上進 / Mollie"
+    assert space_text("Vinta / Abc123") == "Vinta / Abc123"
+    assert space_text("Abc123 / 陳上進") == "Abc123 / 陳上進"
+    assert space_text("陳上進 / Abc123") == "陳上進 / Abc123"
     assert space_text("得到一個 A / B 的結果") == "得到一個 A / B 的結果"
     assert space_text("好人 / bad guy") == "好人 / bad guy"
     assert space_text("吃apple / banana") == "吃 apple / banana"
 
 
-# A slash with half-width characters on both sides binds them into one token,
-# spaced from CJK as a unit and never split
-def test_handle_symbol_as_slash_token():
-    assert space_text("Vinta/Mollie") == "Vinta/Mollie"  # If no CJK, DO NOT change
+def test_handle_symbol_as_joiner_token():
+    assert space_text("Vinta/Abc123") == "Vinta/Abc123"  # If no CJK, DO NOT change
     assert space_text("得到一個A/B的結果") == "得到一個 A/B 的結果"
     assert space_text("他要做A/B測試") == "他要做 A/B 測試"
     assert space_text("打東東26/30") == "打東東 26/30"
@@ -29,20 +29,14 @@ def test_handle_symbol_as_slash_token():
     assert space_text("吃apple/banana") == "吃 apple/banana"
     assert space_text("選A/B其中一個") == "選 A/B 其中一個"
     assert space_text("答案是6/2的商數") == "答案是 6/2 的商數"
+    assert space_text("安装指令：npx skills add vinta/hal-9000") == "安装指令：npx skills add vinta/hal-9000"
 
 
-# Slash reading never crosses lines: each line counts its own slashes
-def test_handle_symbol_per_line():
-    assert space_text("我/你\n他/她") == "我 / 你\n他 / 她"
-    assert space_text("歡迎光臨/再見\n參考 https://example.com/docs") == "歡迎光臨 / 再見\n參考 https://example.com/docs"
-
-
-# When the symbol appears 2+ times or more in one line
-def test_handle_symbol_as_separator_do_not_spacing():
-    assert space_text("陳上進/貓咪/Mollie") == "陳上進/貓咪/Mollie"
-    assert space_text("陳上進/Mollie/貓咪") == "陳上進/Mollie/貓咪"
-    assert space_text("Mollie/Vinta/貓咪") == "Mollie/Vinta/貓咪"
-    assert space_text("Mollie/陳上進/貓咪") == "Mollie/陳上進/貓咪"
+def test_handle_symbol_as_list():
+    assert space_text("陳上進/貓咪/Abc123") == "陳上進/貓咪/Abc123"
+    assert space_text("陳上進/Abc123/貓咪") == "陳上進/Abc123/貓咪"
+    assert space_text("Abc123/Vinta/貓咪") == "Abc123/Vinta/貓咪"
+    assert space_text("Abc123/陳上進/貓咪") == "Abc123/陳上進/貓咪"
     assert space_text("日期是2024/01/22的早上") == "日期是 2024/01/22 的早上"
 
     assert (
@@ -51,17 +45,22 @@ def test_handle_symbol_as_separator_do_not_spacing():
     )
 
     assert (
+        space_text("8964/3★集會所接待員/克隆·麻煩大師/手卷師傅(已退休)/主程式毀滅者/dae-dae-o/#絕地家庭小會議/#今天大掃除了沒有/NS編號在banner裡/discord:史單力#3230")
+        == "8964/3★集會所接待員/克隆・麻煩大師/手卷師傅 (已退休)/主程式毀滅者/dae-dae-o/#絕地家庭小會議/#今天大掃除了沒有/NS 編號在 banner 裡/discord: 史單力 #3230"
+    )
+
+    assert (
         space_text("after 80'/气象工作者/不苟同/关注abc天气变化/向往123自由/热爱科学、互联网、编程Node.js Web C++ Julia Python")
         == "after 80'/气象工作者/不苟同/关注 abc 天气变化/向往 123 自由/热爱科学、互联网、编程 Node.js Web C++ Julia Python"
     )
 
-    assert space_text("2016-12-26(奇幻电影节) / 2017-01-20(美国) / 詹姆斯麦卡沃伊") == "2016-12-26 (奇幻电影节) / 2017-01-20 (美国) / 詹姆斯麦卡沃伊"
-
     # DO NOT change if already spacing
-    assert space_text("陳上進 / 貓咪 / Mollie") == "陳上進 / 貓咪 / Mollie"
-    assert space_text("陳上進 / Mollie / 貓咪") == "陳上進 / Mollie / 貓咪"
-    assert space_text("Mollie / Vinta / 貓咪") == "Mollie / Vinta / 貓咪"
-    assert space_text("Mollie / 陳上進 / 貓咪") == "Mollie / 陳上進 / 貓咪"
+    assert space_text("陳上進 / 貓咪 / Abc123") == "陳上進 / 貓咪 / Abc123"
+    assert space_text("陳上進 / Abc123 / 貓咪") == "陳上進 / Abc123 / 貓咪"
+    assert space_text("Abc123 / Vinta / 貓咪") == "Abc123 / Vinta / 貓咪"
+    assert space_text("Abc123 / 陳上進 / 貓咪") == "Abc123 / 陳上進 / 貓咪"
+
+    assert space_text("2016-12-26(奇幻电影节) / 2017-01-20(美国) / 詹姆斯麦卡沃伊") == "2016-12-26 (奇幻电影节) / 2017-01-20 (美国) / 詹姆斯麦卡沃伊"
 
 
 def test_handle_symbol_as_unix_absolute_file_path():
@@ -106,9 +105,6 @@ def test_handle_symbol_as_unix_absolute_file_path():
     assert space_text("目錄/usr/bin/包含執行檔") == "目錄 /usr/bin/ 包含執行檔"
     assert space_text("資料夾/etc/nginx/存放設定") == "資料夾 /etc/nginx/ 存放設定"
 
-    # Glob pattern
-    assert space_text("聽說桐島rm -rf /*了") == "聽說桐島 rm -rf /* 了"
-
 
 def test_handle_symbol_as_unix_relative_file_path():
     # Basic relative paths
@@ -116,7 +112,6 @@ def test_handle_symbol_as_unix_relative_file_path():
     assert space_text("構建dist/index.js完成") == "構建 dist/index.js 完成"
     assert space_text("運行test/spec.js測試") == "運行 test/spec.js 測試"
     assert space_text("編輯docs/README.md文檔") == "編輯 docs/README.md 文檔"
-    assert space_text("安装指令：npx skills add vinta/hal-9000") == "安装指令：npx skills add vinta/hal-9000"
 
     # Project directories
     assert space_text("查看templates/base.html模板") == "查看 templates/base.html 模板"
@@ -139,10 +134,6 @@ def test_handle_symbol_as_unix_relative_file_path():
     assert space_text("執行./scripts/test.sh腳本") == "執行 ./scripts/test.sh 腳本"
     assert space_text("查看./.claude/CLAUDE.md說明") == "查看 ./.claude/CLAUDE.md 說明"
 
-    # Wildcard patterns
-    assert space_text("模板在templates/*.html裡") == "模板在 templates/*.html 裡"
-    assert space_text("測試所有test/**/*.js檔案") == "測試所有 test/**/*.js 檔案"
-
     # Nested paths
     assert space_text("位於src/components/Button/index.tsx") == "位於 src/components/Button/index.tsx"
     assert space_text("存放在assets/fonts/Inter/Regular.woff2") == "存放在 assets/fonts/Inter/Regular.woff2"
@@ -150,3 +141,9 @@ def test_handle_symbol_as_unix_relative_file_path():
     # Multiple file paths in one sentence
     assert space_text("從src/utils.js複製到dist/utils.js") == "從 src/utils.js 複製到 dist/utils.js"
     assert space_text("比較test/fixtures/input.txt和test/fixtures/output.txt") == "比較 test/fixtures/input.txt 和 test/fixtures/output.txt"
+
+
+def test_handle_symbol_as_glob_pattern():
+    assert space_text("聽說桐島rm -rf /*了") == "聽說桐島 rm -rf /* 了"
+    assert space_text("模板在templates/*.html裡") == "模板在 templates/*.html 裡"
+    assert space_text("測試所有test/**/*.js檔案") == "測試所有 test/**/*.js 檔案"

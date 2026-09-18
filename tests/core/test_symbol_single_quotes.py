@@ -6,6 +6,10 @@ def test_handle_symbols_as_quotes():
 
     assert space_text("举个栗子，如果一道题只包含'A' ~ 'Z'意味着字符集大小是") == "举个栗子，如果一道题只包含 'A' ~ 'Z' 意味着字符集大小是"
 
+    assert space_text("后续会直接用iframe window.addEventListener('message')") == "后续会直接用 iframe window.addEventListener('message')"
+
+    assert space_text("'! git commit -a -m \"蛤\"'") == "'! git commit -a -m \"蛤\"'"
+
     # Single quotes around Chinese text should not have spaces added
     assert space_text("Remove '铁蕾' from 1 Folder?") == "Remove '铁蕾' from 1 Folder?"
 

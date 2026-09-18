@@ -1,7 +1,7 @@
 from pangu import space_text
 
 
-def test_handle_symbols_as_quotes():
+def test_handle_symbols_as_quotes_around_cjk():
     assert space_text('前面"中文123漢字"後面') == '前面 "中文 123 漢字" 後面'
     assert space_text('前面"中文123"後面') == '前面 "中文 123" 後面'
     assert space_text('前面"中文abc"後面') == '前面 "中文 abc" 後面'
@@ -11,8 +11,7 @@ def test_handle_symbols_as_quotes():
     assert space_text('head "中文123漢字" tail') == 'head "中文 123 漢字" tail'
 
 
-# The per-line pipe/plus readings run after the quote cleanup, so a separator space landing just inside a closing quote must be re-stripped: the first pass emits what a second pass would
-def test_handle_separator_spacing_inside_quotes_idempotently():
+def test_handle_separator_spacing_inside_quotes():
     assert space_text('"字+"') == '"字 +"'
     assert space_text('"字|"') == '"字 |"'
     assert space_text('你好"字+"世界') == '你好 "字 +" 世界'
@@ -20,12 +19,13 @@ def test_handle_separator_spacing_inside_quotes_idempotently():
     assert space_text('多行"字+"\n下行"字|"') == '多行 "字 +"\n下行 "字 |"'
 
 
-def test_handle_adjacent_to_cjk():
+def test_handle_symbols_as_quotes_around_english():
     assert space_text('我們也不可以說"We invited the reverend to dinner."') == '我們也不可以說 "We invited the reverend to dinner."'
     assert space_text('"We invited the Rev. Darling."我們也不可以說') == '"We invited the Rev. Darling." 我們也不可以說'
     assert space_text('它應該這樣使用："We invited"') == '它應該這樣使用："We invited"'
 
-    # Full paragraph with multiple quoted segments and solitary &nbsp; (\u00a0)
+    assert space_text("\"! git commit -a -m '蛤'\"") == "\"! git commit -a -m '蛤'\""
+
     assert (
         space_text(
             'Rev. (Reverend；牧師的尊稱)這個縮寫嚴格來說並不是一項頭銜，而是形容詞。所以，它應該這樣使用："We invited the Rev. Alan Darling." 或\u00a0 "We\u00a0invited the Rev. Mr. Darling."，而非"We invited the Rev. Darling."我們也不可以說"We invited the reverend to dinner." -- Only a cad would invite the rev. (只有下流的人才會招致批評：句中的 rev. 是 review 的縮寫，算是雙關語)'
@@ -34,8 +34,6 @@ def test_handle_adjacent_to_cjk():
     )
 
 
-# The real paragraph from ananedu.com/yes928/writter/abbreviations.htm, whose text node keeps the line breaks of the wrapped HTML source. Its spacing is already correct, so it must come back untouched: the
-# quoted segments span those newlines, and pairing them line by line would resync on the wrong quote and eat the spaces around 或 and ，而非
 def test_handle_across_the_line_breaks_of_a_wrapped_html_source():
     assert space_text('使用："We\ninvited Darling." 或 "We invited."') == '使用："We\ninvited Darling." 或 "We invited."'
 
@@ -43,8 +41,23 @@ def test_handle_across_the_line_breaks_of_a_wrapped_html_source():
     assert space_text(text) == text
 
 
-# Some input habits type both quotes of a pair as closing curly quotes,
-# so a ”…” pair reads as opening/closing quotes when no unclosed “ precedes it
+# Rare cases, ignore
+# See https://github.com/vinta/pangu.js/issues/287
+# def test_handle_mis_pairing_known_limitation():
+#     assert space_text('Darling." 或 "We') == 'Darling." 或 "We'
+#
+# \u201c
+# \u201d
+def test_handle_symbols_as_quotes():
+    assert space_text("獲標準普爾長期信用評等“AA”全球電信業之首") == "獲標準普爾長期信用評等 “AA” 全球電信業之首"
+
+    assert space_text("阿里云开源“计算王牌”Blink，实时计算时代已来") == "阿里云开源 “计算王牌” Blink，实时计算时代已来"
+
+    assert space_text("苹果撤销Facebook“企业证书”后者股价一度短线走低") == "苹果撤销 Facebook “企业证书” 后者股价一度短线走低"
+
+    assert space_text("【UCG中字】“數毛社”DF的《戰神4》全新演示解析") == "【UCG 中字】“數毛社” DF 的《戰神 4》全新演示解析"
+
+
 def test_handle_misused_quote_pairs():
     assert space_text("他说”你好”啊") == "他说 ”你好” 啊"
 
@@ -52,20 +65,3 @@ def test_handle_misused_quote_pairs():
         space_text("《战斧骨》里还有个镜头挺有意思，就是男主”见路不走”，不从峡谷入口走，而选择了从侧面翻越，还顺便借着口哨吸引出来一个食人族给杀了。")
         == "《战斧骨》里还有个镜头挺有意思，就是男主 ”见路不走”，不从峡谷入口走，而选择了从侧面翻越，还顺便借着口哨吸引出来一个食人族给杀了。"
     )
-
-
-# FIXME
-# Straight quotes cannot distinguish opening from closing, so quotes are paired left-to-right. Text whose first quote is already a closing quote shifts the pairing for everything after it, and the CJK prose
-# between two quoted segments is then treated as quoted content whose edge spaces get stripped. See #287
-def test_handle_mis_pairing_known_limitation():
-    assert space_text('Darling." 或 "We') == 'Darling."或" We'
-
-
-# \u201c
-# \u201d
-def test_handle_english_with_symbols():
-    assert space_text("阿里云开源“计算王牌”Blink，实时计算时代已来") == "阿里云开源 “计算王牌” Blink，实时计算时代已来"
-
-    assert space_text("苹果撤销Facebook“企业证书”后者股价一度短线走低") == "苹果撤销 Facebook “企业证书” 后者股价一度短线走低"
-
-    assert space_text("【UCG中字】“數毛社”DF的《戰神4》全新演示解析") == "【UCG 中字】“數毛社” DF 的《戰神 4》全新演示解析"

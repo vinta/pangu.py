@@ -41,17 +41,27 @@ def test_handle_number_forms():
     assert space_text("中文 Ⅶ 漢字") == "中文 Ⅶ 漢字"
 
 
-# \u2700 - \u27bf
-def test_handle_dingbats_symbols_add_space_between_them_and_cjk():
+# https://symbl.cc/en/unicode-table/#letterlike-symbols
+def test_handle_letterlike_symbols():
+    assert space_text("今天123℃很熱") == "今天 123℃ 很熱"
+    assert space_text("攝氏25℃到30℃之間") == "攝氏 25℃ 到 30℃ 之間"
+    assert space_text("水溫98℉了") == "水溫 98℉ 了"
+    assert space_text("5℃~10℃之間") == "5℃~10℃ 之間"
+    assert space_text("溫度是℃單位") == "溫度是 ℃ 單位"
+    assert space_text("第№5號") == "第 №5 號"
+    assert space_text("電阻10Ω很小") == "電阻 10Ω 很小"  # \u2126 OHM SIGN, not Greek \u03a9
+    assert space_text("中文ℝ漢字") == "中文 ℝ 漢字"
+    assert space_text("中文 ℝ 漢字") == "中文 ℝ 漢字"
+    assert space_text("符號ℓ表示長度") == "符號 ℓ 表示長度"
+    assert space_text("資訊ℹ圖示") == "資訊 ℹ 圖示"
+    assert space_text("估計℮500ml") == "估計 ℮500ml"
+
+
+# https://symbl.cc/en/unicode-table/#dingbats
+def test_handle_dingbats_symbols():
     assert space_text("剪刀✂符號") == "剪刀 ✂ 符號"
     assert space_text("完成✅了") == "完成 ✅ 了"
     assert space_text("愛心❤符號") == "愛心 ❤ 符號"
-
-
-# FIXME
-# # \ufffd
-# def test_handle_specials_symbols_add_space_between_them_and_cjk():
-#     assert space_text("我喜歡在填表單的時候故意加幾個� (U+FFFD)字元，好讓那些工程師懷疑系統有bug") == "我喜歡在填表單的時候故意加幾個 � (U+FFFD) 字元，好讓那些工程師懷疑系統有 bug"
 
 
 # https://symbl.cc/en/unicode-table/#cjk-radicals-supplement

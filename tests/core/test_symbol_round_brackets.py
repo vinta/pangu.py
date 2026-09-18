@@ -18,10 +18,6 @@ def test_handle_symbols_as_round_brackets():
 
     assert space_text("Chang Stream(变更记录流)是指collection(数据库集合)的变更事件流") == "Chang Stream (变更记录流) 是指 collection (数据库集合) 的变更事件流"
 
-    assert space_text("从结果来看，当a.b销毁后，`a.getB()`返回值为null") == "从结果来看，当 a.b 销毁后，`a.getB()` 返回值为 null"
-
-    assert space_text("后续会直接用iframe window.addEventListener('message')") == "后续会直接用 iframe window.addEventListener('message')"
-
 
 def test_handle_multiline_content_in_round_brackets():
     # A space before a newline is mid-content, not a bracket-edge space: only the literal string edges get stripped

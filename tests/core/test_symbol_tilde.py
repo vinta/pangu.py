@@ -1,7 +1,6 @@
 from pangu import space_text
 
 
-# Symbol ~ only add space on the right
 def test_handle_symbol():
     assert space_text("前面~") == "前面~"
     assert space_text("前面~~") == "前面~~"
@@ -17,6 +16,7 @@ def test_handle_symbol():
     assert space_text("前面~ 後面") == "前面~ 後面"
     assert space_text("前面 ~後面") == "前面 ~後面"
 
-    # Special cases
+
+def test_handle_symbol_as_preserved_pattern():
     assert space_text("前面~=後面") == "前面 ~= 後面"
     assert space_text("前面 ~= 後面") == "前面 ~= 後面"
