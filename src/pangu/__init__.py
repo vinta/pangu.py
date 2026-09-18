@@ -16,5 +16,5 @@ The engine is CPU-bound regex work, so there is no async API; from async code us
 from pangu._cli import cli
 from pangu._core import has_proper_spacing, space_file, space_text
 
-__version__ = "5.0.0"
+__version__ = "6.0.0"
 __all__ = ["__version__", "cli", "has_proper_spacing", "space_file", "space_text"]

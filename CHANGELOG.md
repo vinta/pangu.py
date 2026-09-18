@@ -1,6 +1,6 @@
 # Changelog
 
-## vX.Y.Z / xxxx-xx-xx
+## v6.0.0 / 2026-09-18
 
 - Implement **Paranoid Text Spacing Algorithm v10** (ported from [pangu.js](https://github.com/vinta/pangu.js) `v10.1.1`)
   - Never add spaces around `/` next to CJK, except in file paths like `/src/index.ts`
