@@ -9,12 +9,17 @@ Deliberate deviations from the js CLI, all user-facing:
 - usage errors exit 2 (argparse convention) where js exits 1
 """
 
+from __future__ import annotations
+
 import argparse
 import os
 import sys
-from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 from pangu._core import spacing_file, spacing_text
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 _DESCRIPTION = """
 pangu.py -- Paranoid text spacing for good readability, to automatically insert whitespace between CJK and half-width characters (alphabetical letters, numerical digits and symbols).

@@ -5,7 +5,7 @@ description = "Paranoid text spacing for good readability, to automatically inse
 authors = [{ name = "Vinta Chen", email = "vinta.chen@gmail.com" }]
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 dependencies = []
 keywords = [
     "pangu",
@@ -30,6 +30,7 @@ classifiers = [
     "Natural Language :: Japanese",
     "Natural Language :: Korean",
     "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -54,7 +55,7 @@ requires = ["uv_build>=0.12.0,<0.13"]
 build-backend = "uv_build"
 
 [dependency-groups]
-test = ["pytest>=9.1.1"]
+test = ["pytest>=8.4.2"]
 lint = ["ruff>=0.16.0", "ty>=0.0.64"]
 dev = [
     { include-group = "test" },

@@ -19,10 +19,14 @@ js counts U+FEFF as whitespace, Python counts U+001C-U+001F — which no ported 
 observes; explicit classes are used only where behavior demanded it (CJK_HASH).
 """
 
-import os
+from __future__ import annotations
+
 import re
 from pathlib import Path
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
+
+if TYPE_CHECKING:
+    import os
 
 # CJK is short for Chinese, Japanese, and Korean
 #
