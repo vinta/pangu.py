@@ -75,7 +75,9 @@ def cli(argv: Sequence[str] | None = None) -> int:
     if args.text_or_path == "-" or (args.text_or_path is None and not sys.stdin.isatty()):
         # An explicit - always means stdin, under -f too (cf. tar -f -): the text itself arrives on stdin, so there is no file to open
         # print() puts the trailing newline back, so dropping one here passes piped input through unchanged
-        source = sys.stdin.read().removesuffix("\n")
+        source = sys.stdin.read()
+        if source.endswith("\n"):
+            source = source[:-1]
         is_file = False
     elif args.text_or_path is not None:
         source = args.text_or_path
