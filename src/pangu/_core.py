@@ -15,7 +15,7 @@ Deviations forced by Python's `re`:
   CJK_ANS check their left context in code instead
 
 Known, accepted delta: the few remaining `\\s` uses (PIPE_SEPARATOR, PLUS_SEPARATOR,
-BARE_HTML_TAG, HTML_TAG_PATTERN) keep js/py whitespace semantics differences —
+BARE_HTML_TAG, HTML_TAG_PATTERN, HTTP_URL) keep js/py whitespace semantics differences —
 js counts U+FEFF as whitespace, Python counts U+001C-U+001F — which no ported test
 observes; explicit classes are used only where behavior demanded it (CJK_HASH).
 """
@@ -307,7 +307,6 @@ def _trim_http_url(url: str) -> str:
 class PlaceholderReplacer:
     """Stores text snippets and swaps them for opaque indexed placeholders until restore."""
 
-    # Every space_text() call creates instances from the same few fixed configs, so compiled patterns are cached and shared across instances
     _pattern_cache: ClassVar[dict[str, re.Pattern[str]]] = {}
 
     def __init__(self, placeholder: str, start_delimiter: str, end_delimiter: str) -> None:
