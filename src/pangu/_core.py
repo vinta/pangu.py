@@ -161,6 +161,9 @@ MULTI_LETTER_BLOOD_TYPE = "AB|RhD|Rh"
 NAME_SUFFIX = rf"(?:(?<![A-Za-z0-9])(?:(?:{PRODUCT_NAME}|{PRODUCT_TIER})\+|(?:{CREDIT_RATING}|{MULTI_LETTER_BLOOD_TYPE})[+-])|(?:{PRODUCT_NAME_IN_CJK})\+)"
 # \Z, not $: the tested slice never ends in a newline, but Python's $ would also match before one
 NAME_SUFFIX_AT_END = re.compile(rf"{NAME_SUFFIX}\Z")
+# Length of the longest name suffix match (CATCHPLAY+). V8 reads NAME_SUFFIX only this far back on its own, while Python's re tries every start position from pos, so the name suffix
+# checks pass this window explicitly. tests/test_core_deviations.py fails if a listed name outgrows it
+NAME_SUFFIX_MAX_LENGTH = 10
 
 # A closing mark follows the suffix tight; a word or an opening bracket keeps its boundary space
 CLOSING_AFTER_SUFFIX = re.compile(r"[/)\]}\uff09\u3011\u3015\u3009\u300b\u300d\u300f\uff0c\u3002\u3001\uff1b\uff1a\uff01\uff1f]")
@@ -403,8 +406,9 @@ def _sub_ans_operator_cjk(text: str) -> str:
     """
 
     def replace(match: re.Match[str]) -> str:
-        # js lookbehind (?<!NAME_SUFFIX) sits right after the operator. Of the operators only - can end a name suffix, so checking it first keeps this linear on long text
-        if match.group(2) == "-" and NAME_SUFFIX_AT_END.search(text, 0, match.end(2)):
+        # js lookbehind (?<!NAME_SUFFIX) sits right after the operator
+        end = match.end(2)
+        if NAME_SUFFIX_AT_END.search(text, max(0, end - NAME_SUFFIX_MAX_LENGTH), end):
             return match.group(0)
         return f"{match.group(1)} {match.group(2)} {match.group(3)}"
 
@@ -419,8 +423,9 @@ def _sub_cjk_ans(text: str) -> str:
     """
 
     def replace(match: re.Match[str]) -> str:
-        # Every name suffix ends in + or -, so only those can fail the js lookbehind (?<!NAME_SUFFIX); checking first keeps this linear on long text
-        if match.group(2) in "+-" and NAME_SUFFIX_AT_END.search(text, 0, match.end()):
+        # js lookbehind (?<!NAME_SUFFIX) sits right after the ANS character
+        end = match.end()
+        if NAME_SUFFIX_AT_END.search(text, max(0, end - NAME_SUFFIX_MAX_LENGTH), end):
             return match.group(0)
         return f"{match.group(1)} {match.group(2)}"
 
@@ -441,7 +446,9 @@ def _spacing_pluses_in_line(line: str, compound_word_manager: PlaceholderReplace
         def replace(match: re.Match[str]) -> str:
             offset = match.start()
             # Read through compound placeholders to recognize names such as non-Disney+ and foo-Apple TV+
-            if not NAME_SUFFIX_AT_END.search(compound_word_manager.restore(line[: offset + 1])):
+            # ponytail: mixed compounds and pluses rescan prefixes; use a single name lookup pass if long lines make this slow
+            restored = compound_word_manager.restore(line[: offset + 1])
+            if not NAME_SUFFIX_AT_END.search(restored, max(0, len(restored) - NAME_SUFFIX_MAX_LENGTH)):
                 return " + "
             return "+" if CLOSING_AFTER_SUFFIX.match(line, offset + 1) else "+ "
 
