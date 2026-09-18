@@ -27,10 +27,10 @@ $ pip install -U pangu
 ```python
 import pangu
 
-new_text = pangu.spacing_text("你從什麼時候開始產生了我沒使用Monkey Patch的錯覺?")
+new_text = pangu.space_text("你從什麼時候開始產生了我沒使用Monkey Patch的錯覺?")
 # new_text = "你從什麼時候開始產生了我沒使用 Monkey Patch 的錯覺?"
 
-new_content = pangu.spacing_file("path/to/file.txt", encoding="utf-8")
+new_content = pangu.space_file("path/to/file.txt", encoding="utf-8")
 # new_content = "與 PM 戰鬥的人，應當小心自己不要成為 PM"
 
 pangu.has_proper_spacing("聽說 Hadoop 工程師睡不著的時候都會 Map/Reduce 羊")

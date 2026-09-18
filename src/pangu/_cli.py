@@ -16,7 +16,7 @@ import os
 import sys
 from typing import TYPE_CHECKING
 
-from pangu._core import spacing_file, spacing_text
+from pangu._core import space_file, space_text
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -85,7 +85,7 @@ def cli(argv: Sequence[str] | None = None) -> int:
     else:
         parser.error("the following arguments are required: text_or_path (or pipe text via stdin)")
 
-    new_text = spacing_file(source) if is_file else spacing_text(source)
+    new_text = space_file(source) if is_file else space_text(source)
 
     if args.is_check:
         if new_text == source:

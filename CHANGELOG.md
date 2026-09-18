@@ -3,6 +3,7 @@
 ## vX.Y.Z / xxxx-xx-xx
 
 - Support Python 3.8+
+- Rename `spacing_text()` to `space_text()` and `spacing_file()` to `space_file()`
 
 ## v5.0.0 / 2026-08-01
 

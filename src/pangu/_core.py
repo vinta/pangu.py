@@ -2,9 +2,9 @@
 
 Mapping: this module ports `pangu.js/src/shared/index.ts` — same UPPER_SNAKE pattern
 names, same load-bearing pipeline order — so each upstream release ports as a
-mechanical diff (see docs/adr/0001). `Pangu.spacingText()` becomes `spacing_text()`,
-`Pangu.hasProperSpacing()` becomes `has_proper_spacing()`, and `spacingFileSync()`
-from `pangu.js/src/node/index.ts` becomes `spacing_file()`.
+mechanical diff (see docs/adr/0001). `Pangu.spaceText()` becomes `space_text()`,
+`Pangu.hasProperSpacing()` becomes `has_proper_spacing()`, and `spaceFileSync()`
+from `pangu.js/src/node/index.ts` becomes `space_file()`.
 
 Deviations forced by Python's `re`:
 
@@ -252,7 +252,7 @@ _AN_CHARS = frozenset("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
 class PlaceholderReplacer:
     """Stores text snippets and swaps them for opaque indexed placeholders until restore."""
 
-    # Every spacing_text() call creates instances from the same few fixed configs, so compiled patterns are cached and shared across instances
+    # Every space_text() call creates instances from the same few fixed configs, so compiled patterns are cached and shared across instances
     _pattern_cache: ClassVar[dict[str, re.Pattern[str]]] = {}
 
     def __init__(self, placeholder: str, start_delimiter: str, end_delimiter: str) -> None:
@@ -390,7 +390,7 @@ def _fix_bracket_spacing(text: str) -> str:
     return text
 
 
-def spacing_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the js pipeline runs as one ordered sequence and the order is load-bearing (ADR 0001)
+def space_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the js pipeline runs as one ordered sequence and the order is load-bearing (ADR 0001)
     """Insert whitespace between CJK and half-width characters in ``text``."""
     if len(text) <= 1 or not ANY_CJK.search(text):
         return text
@@ -419,7 +419,7 @@ def spacing_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the
                 if tag_name not in VOID_HTML_TAGS and tag_name not in closed_tag_names:
                     return mentioned_tag_manager.store(tag)
             # Process attribute values inside the tag
-            processed_tag = HTML_TAG_ATTRIBUTE.sub(lambda attr_match: f'{attr_match.group(1)}="{spacing_text(attr_match.group(2))}"', tag)
+            processed_tag = HTML_TAG_ATTRIBUTE.sub(lambda attr_match: f'{attr_match.group(1)}="{space_text(attr_match.group(2))}"', tag)
             return html_tag_manager.store(processed_tag)
 
         # Hide every real tag behind a placeholder; attribute values get spacing first
@@ -530,10 +530,10 @@ def spacing_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the
 
 def has_proper_spacing(text: str) -> bool:
     """Return whether ``text`` already has proper spacing."""
-    return spacing_text(text) == text
+    return space_text(text) == text
 
 
-def spacing_file(path: str | os.PathLike[str], *, encoding: str = "utf-8") -> str:
+def space_file(path: str | os.PathLike[str], *, encoding: str = "utf-8") -> str:
     """Read the file at ``path`` and return its content with spacing applied."""
     # Decode bytes directly, not read_text(): text mode's universal newlines would rewrite \r\n and \r to \n, while js readFileSync preserves line endings
-    return spacing_text(Path(path).read_bytes().decode(encoding))
+    return space_text(Path(path).read_bytes().decode(encoding))
