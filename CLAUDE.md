@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-`pangu.py` is a text spacing library that automatically inserts whitespace between CJK (Chinese, Japanese, Korean) characters and half-width characters (alphabetical letters, numerical digits, and symbols). It is a Python port of the pangu.js v9 engine, shipped as a zero-dependency PyPI package with a module API and a CLI.
+`pangu.py` is a text spacing library that automatically inserts whitespace between CJK (Chinese, Japanese, Korean) characters and half-width characters (alphabetical letters, numerical digits, and symbols). It is a Python port of the pangu.js v10 engine, shipped as a zero-dependency PyPI package with a module API and a CLI.
 
 ## Common Development Commands
 
