@@ -1,5 +1,9 @@
 # Changelog
 
+## vX.Y.Z / xxxx-xx-xx
+
+- Support Python 3.8+
+
 ## v5.0.0 / 2026-08-01
 
 - Implement **Paranoid Text Spacing Algorithm v9** (ported from [pangu.js](https://github.com/vinta/pangu.js) `v9.1.0`)
