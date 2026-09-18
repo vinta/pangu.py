@@ -10,7 +10,7 @@ Paranoid text spacing for good readability, to automatically insert whitespace b
 - [pangu.py](https://github.com/vinta/pangu.py)
 - [pangu.go](https://github.com/vinta/pangu)
 - [pangu.java](https://github.com/vinta/pangu.java)
-- [pangu.space](https://github.com/vinta/pangu.space)
+- [pangu.space](https://github.com/vinta/pangu.space) (HTTP API)
 
 ## Installation
 
