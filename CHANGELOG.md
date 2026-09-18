@@ -3,6 +3,12 @@
 ## vX.Y.Z / xxxx-xx-xx
 
 - Implement **Paranoid Text Spacing Algorithm v10** (ported from [pangu.js](https://github.com/vinta/pangu.js) `v10.1.1`)
+  - Never add spaces around `/` next to CJK, except in file paths like `/src/index.ts`
+  - Keep everything inside `http://` and `https://` URLs untouched
+  - `+` between a word and CJK is a separator now, not a suffix: `A+CJK` becomes `A + CJK`
+  - `-` between CJK and digits is a separator now, not a minus sign
+  - Keep superscripts like `²`, `™`, and `®` attached to the text on their left
+  - Add spaces between CJK and Letterlike Symbols like `℃` and `№`, and after `©` before digits
 - Support Python 3.8+
 - Rename `spacing_text()` to `space_text()` and `spacing_file()` to `space_file()`
 - CLI `-h` shows the version at the start of the help text
