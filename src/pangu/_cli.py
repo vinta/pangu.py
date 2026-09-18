@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
 _DESCRIPTION = """
-pangu.py -- Paranoid text spacing for good readability, to automatically insert whitespace between CJK and half-width characters (alphabetical letters, numerical digits and symbols).
+pangu.py v{version} -- Paranoid text spacing for good readability, to automatically insert whitespace between CJK and half-width characters (alphabetical letters, numerical digits and symbols).
 """
 
 _EPILOG = """
@@ -38,7 +38,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="pangu",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description=_DESCRIPTION,
+        description=_DESCRIPTION.format(version=__version__),
         epilog=_EPILOG,
     )
     # self-identifying so `pangu -v` disambiguates from pangu.js when both are installed

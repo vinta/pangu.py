@@ -5,6 +5,7 @@
 - Implement **Paranoid Text Spacing Algorithm v10** (ported from [pangu.js](https://github.com/vinta/pangu.js) `v10.1.1`)
 - Support Python 3.8+
 - Rename `spacing_text()` to `space_text()` and `spacing_file()` to `space_file()`
+- CLI `-h` shows the version at the start of the help text
 
 ## v5.0.0 / 2026-08-01
 
