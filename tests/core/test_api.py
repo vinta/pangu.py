@@ -1,18 +1,18 @@
-from pangu import has_proper_spacing, spacing_text
+from pangu import has_proper_spacing, space_text
 
 
-# spacingText()
-def test_spacing_text():
-    assert spacing_text("聽說Hadoop工程師睡不著的時候都會MapReduce羊") == "聽說 Hadoop 工程師睡不著的時候都會 MapReduce 羊"
+# spaceText()
+def test_space_text():
+    assert space_text("聽說Hadoop工程師睡不著的時候都會MapReduce羊") == "聽說 Hadoop 工程師睡不著的時候都會 MapReduce 羊"
 
-    assert spacing_text("遇到了一個問題，決定用 thread 來解決，嗯，在現有我兩個問了題") == "遇到了一個問題，決定用 thread 來解決，嗯，在現有我兩個問了題"
+    assert space_text("遇到了一個問題，決定用 thread 來解決，嗯，在現有我兩個問了題") == "遇到了一個問題，決定用 thread 來解決，嗯，在現有我兩個問了題"
 
 
-def test_spacing_text_is_idempotent():
+def test_space_text_is_idempotent():
     # Formatter contract: a second pass never changes the output, so format-then-check always passes
     for text in ['"字+"', '"字|"', '你好"字+"世界', '多行"字+"\n下行"字|"', "聽說Hadoop工程師睡不著的時候都會MapReduce羊"]:
-        once = spacing_text(text)
-        assert spacing_text(once) == once
+        once = space_text(text)
+        assert space_text(once) == once
         assert has_proper_spacing(once) is True
 
 

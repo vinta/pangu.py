@@ -20,6 +20,7 @@ def test_handle_help_message_display(capsys):
     output = capsys.readouterr().out
     assert "usage: pangu" in output
     assert "Paranoid text spacing" in output
+    assert f"pangu.py v{__version__} --" in output
     # the stdin behavior note lives in the help epilog, not the README
     assert "argument wins over piped stdin" in output
 

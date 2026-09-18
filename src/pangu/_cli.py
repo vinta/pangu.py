@@ -16,13 +16,13 @@ import os
 import sys
 from typing import TYPE_CHECKING
 
-from pangu._core import spacing_file, spacing_text
+from pangu._core import space_file, space_text
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
 _DESCRIPTION = """
-pangu.py -- Paranoid text spacing for good readability, to automatically insert whitespace between CJK and half-width characters (alphabetical letters, numerical digits and symbols).
+pangu.py v{version} -- Paranoid text spacing for good readability, to automatically insert whitespace between CJK and half-width characters (alphabetical letters, numerical digits and symbols).
 """
 
 _EPILOG = """
@@ -38,7 +38,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="pangu",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description=_DESCRIPTION,
+        description=_DESCRIPTION.format(version=__version__),
         epilog=_EPILOG,
     )
     # self-identifying so `pangu -v` disambiguates from pangu.js when both are installed
@@ -85,7 +85,7 @@ def cli(argv: Sequence[str] | None = None) -> int:
     else:
         parser.error("the following arguments are required: text_or_path (or pipe text via stdin)")
 
-    new_text = spacing_file(source) if is_file else spacing_text(source)
+    new_text = space_file(source) if is_file else space_text(source)
 
     if args.is_check:
         if new_text == source:

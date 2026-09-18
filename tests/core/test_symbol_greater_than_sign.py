@@ -1,27 +1,24 @@
-from pangu import spacing_text
+from pangu import space_text
 
 
-# When CJK touches the > directly
 def test_handle_symbol_as_operator():
-    assert spacing_text("前面>後面") == "前面 > 後面"
-    assert spacing_text("Vinta>陳上進") == "Vinta > 陳上進"
-    assert spacing_text("陳上進>Vinta") == "陳上進 > Vinta"
-    assert spacing_text("溫度>30就開冷氣") == "溫度 > 30 就開冷氣"
+    assert space_text("前面>後面") == "前面 > 後面"
+    assert space_text("Vinta>陳上進") == "Vinta > 陳上進"
+    assert space_text("陳上進>Vinta") == "陳上進 > Vinta"
+    assert space_text("溫度>30就開冷氣") == "溫度 > 30 就開冷氣"
 
     # DO NOT change if already spacing
-    assert spacing_text("前面 > 後面") == "前面 > 後面"
-    assert spacing_text("Vinta > Mollie") == "Vinta > Mollie"
-    assert spacing_text("Vinta > 陳上進") == "Vinta > 陳上進"
-    assert spacing_text("陳上進 > Vinta") == "陳上進 > Vinta"
-    assert spacing_text("得到一個 A > B 的結果") == "得到一個 A > B 的結果"
+    assert space_text("前面 > 後面") == "前面 > 後面"
+    assert space_text("Vinta > Abc123") == "Vinta > Abc123"
+    assert space_text("Vinta > 陳上進") == "Vinta > 陳上進"
+    assert space_text("陳上進 > Vinta") == "陳上進 > Vinta"
+    assert space_text("得到一個 A > B 的結果") == "得到一個 A > B 的結果"
 
 
-# A greater-than sign with half-width characters on both sides binds them into one token,
-# spaced from CJK as a unit and never split
-def test_handle_symbol_as_greater_than_token():
-    assert spacing_text("Vinta>Mollie") == "Vinta>Mollie"  # If no CJK, DO NOT change
-    assert spacing_text("得到一個A>B的結果") == "得到一個 A>B 的結果"
+def test_handle_symbol_as_joiner_token():
+    assert space_text("Vinta>Abc123") == "Vinta>Abc123"  # If no CJK, DO NOT change
+    assert space_text("得到一個A>B的結果") == "得到一個 A>B 的結果"
 
 
-def test_handle_symbol_as_special_case():
-    assert spacing_text("流程是A->B的方向") == "流程是 A->B 的方向"
+def test_handle_symbol_as_preserved_pattern():
+    assert space_text("流程是A->B的方向") == "流程是 A->B 的方向"
