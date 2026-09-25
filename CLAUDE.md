@@ -36,11 +36,7 @@ uv run pytest -k "test_name" -v                         # Run tests matching a n
 
 ## External Tool Documentation
 
-Invoke the `find-docs` skill BEFORE writing code that touches a dependency's API or config, not only when the user asks about a tool. Do not answer from training data, even for familiar APIs.
-
-### Context7 Library IDs
-
-Pre-resolved IDs for the `find-docs` skill. Pass directly to `ctx7 docs`, skipping the `ctx7 library` step:
+Pre-resolved Context7 IDs for the `find-docs` skill. Pass them to `ctx7 docs` and skip `ctx7 library`:
 
 | Tool   | `libraryId`          |
 | ------ | -------------------- |
