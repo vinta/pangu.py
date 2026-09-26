@@ -5,6 +5,8 @@ def test_handle_symbol_as_operator():
     assert space_text("前面=後面") == "前面 = 後面"
     assert space_text("Vinta=陳上進") == "Vinta = 陳上進"
     assert space_text("陳上進=Vinta") == "陳上進 = Vinta"
+    assert space_text("年增率=(今年-去年)") == "年增率 = (今年 - 去年)"
+    assert space_text("總價=(單價*數量)") == "總價 = (單價 * 數量)"
 
     # DO NOT change if already spacing
     assert space_text("前面 = 後面") == "前面 = 後面"

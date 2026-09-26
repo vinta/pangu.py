@@ -151,7 +151,7 @@ CJK_HASH = re.compile(rf"([{CJK}])(#([^ \u00a0]))")
 # A hashtag right after a slash in a list (/#tag) is a hashtag, not a C# shape
 HASH_CJK = re.compile(rf"(([^ \u00a0/])#)([{CJK}])")
 
-PRODUCT_NAME = "Apple TV|CATCHPLAY|[Dd]iscovery|Disney|ESPN|Fitness|iCloud|Paramount|PS"
+PRODUCT_NAME = "Apple TV|CATCHPLAY|[Dd]iscovery|Disney|ESPN|Fitness|iCloud|mo ?店|Paramount|PS"
 PRODUCT_NAME_IN_CJK = "公視|影劇館"
 PRODUCT_TIER = "Pro"
 CREDIT_RATING = "(?:tw)?(?:AA|BBB|BB|CCC)|tw[AB]"
@@ -169,11 +169,16 @@ CLOSING_AFTER_SUFFIX = re.compile(r"[/)\]}\uff09\u3011\u3015\u3009\u300b\u300d\u
 
 # The operator set is - * = & only (no + | / < >). Only direct CJK contact makes a symbol an operator: a symbol between two half-width characters binds them into a joiner token (A-B, a=1, S&P)
 # and never gets spaces, so there is deliberately no between-half-width rule here
-# On the left, a closing bracket also counts as the half-width side: ]-CJK reads as an operator whose operand is the bracketed run
+# A bracket also counts as the half-width side: ]-CJK and CJK-( read as an operator whose operand is the bracketed run
 # Listed name suffixes keep their signs attached. js guards this with the variable-length lookbehind (?<!NAME_SUFFIX) after the operator, which stdlib re rejects;
 # _sub_ans_operator_cjk() applies this pattern and checks that left context in code
-CJK_OPERATOR_ANS = re.compile(rf"([{CJK}])([{OPERATORS}])([{AN}])")
+# An asterisk before a square bracket opens a bracket glob (*[0-9].log), so it stays tight against the bracket. See pangu.js ADR 0033
+CJK_OPERATOR_ANS = re.compile(rf"([{CJK}])(?!\*\[)([{OPERATORS}])([{AN}{LEFT_BRACKETS_BASIC}])")
 ANS_OPERATOR_CJK = re.compile(rf"([{AN}{RIGHT_BRACKETS_BASIC}])([{OPERATORS}])([{CJK}])")
+
+# Hyphen patterns, decided per line like the pipe. Only a hyphen between a closing and an opening bracket flips, since no word connector sits there (CJK-CJK[A]-(A) reads CJK - CJK [A] - (A))
+HYPHEN_CJK_CONTACT = re.compile(rf"[{CJK}]\-|\-[{CJK}]")
+HYPHEN_SEPARATOR = re.compile(rf"(?<=[{RIGHT_BRACKETS_BASIC}])\-(?=[{LEFT_BRACKETS_BASIC}])")
 
 # Pipe patterns for separator vs joiner-token behavior, decided per line
 PIPE_CJK_CONTACT = re.compile(rf"[{CJK}]\||\|[{CJK}]")
@@ -245,7 +250,9 @@ S_A = re.compile(rf"(%)([{A}])")
 # \u00a9 is a sign before a year, not a prefix on it: \u00a9 + digits reads with a space after the sign
 COPYRIGHT_DIGIT = re.compile(r"(\u00a9)([0-9])")
 
-MIDDLE_DOT = re.compile(r"([ ]*)([\u00b7\u2022\u2027])([ ]*)")
+# A run of middle dots is a mask (card number), not a name separator, so only a lone dot converts
+# A dot spaced by a space or &nbsp; is a separator the author chose, so only a tight one converts
+MIDDLE_DOT = re.compile(r"(?<![ \u00a0\u00b7\u2022\u2027])[\u00b7\u2022\u2027](?![ \u00a0\u00b7\u2022\u2027])")
 
 # A bare unpaired non-void tag amid prose is a tag mention, not markup: it reads as one unit and is spaced from CJK it directly touches
 # A trailing self-closing slash is still bare, but void elements render on their own (<br> or <hr>), so they stay markup even unpaired
@@ -451,6 +458,12 @@ def _spacing_pluses_in_line(line: str, compound_word_manager: PlaceholderReplace
     return RIGHT_BRACKET_PLUS_FULL_WIDTH_LEFT_BRACKET.sub(" +", line)
 
 
+def _spacing_hyphens_in_line(line: str) -> str:
+    if not HYPHEN_CJK_CONTACT.search(line):
+        return line
+    return HYPHEN_SEPARATOR.sub(" - ", line)
+
+
 def _fix_bracket_spacing(text: str) -> str:
     # Strip the spaces that earlier rules left just inside a bracket pair: no space after an opening bracket or before a closing bracket
     for pattern, open_bracket, close_bracket in BRACKET_PATTERNS:
@@ -510,6 +523,9 @@ def space_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the j
         # Hide every real tag behind a placeholder; attribute values get spacing first
         new_text = HTML_TAG_PATTERN.sub(replace_html_tag, new_text)
 
+    # Middle dots go before the spacing rules, which would space a tight \u00b7 as ANS
+    new_text = MIDDLE_DOT.sub("・", new_text)
+
     # Dot runs go first, before the single-period rule
     new_text = DOTS_CJK.sub(r"\1 \2", new_text)
 
@@ -566,6 +582,9 @@ def space_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the j
     # Name suffixes are recognized here so their CJK contact still decides the line's other pluses (Disney+CJK A+B)
     new_text = "\n".join(_spacing_pluses_in_line(line, compound_word_manager) for line in new_text.split("\n"))
 
+    # Hyphen reading is per line and runs before the operator rules space the CJK contact away
+    new_text = "\n".join(_spacing_hyphens_in_line(line) for line in new_text.split("\n"))
+
     new_text = CJK_OPERATOR_ANS.sub(r"\1 \2 \3", new_text)
     new_text = _sub_ans_operator_cjk(new_text)
 
@@ -602,8 +621,6 @@ def space_text(text: str) -> str:  # noqa: PLR0915 too-many-statements — the j
 
     new_text = S_A.sub(r"\1 \2", new_text)
     new_text = COPYRIGHT_DIGIT.sub(r"\1 \2", new_text)
-
-    new_text = MIDDLE_DOT.sub("・", new_text)
 
     new_text = _fix_bracket_spacing(new_text)
 

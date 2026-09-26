@@ -7,6 +7,8 @@ def test_handle_product_names_with_suffixes():
     assert space_text("Discovery+和discovery+都上架了") == "Discovery+ 和 discovery+ 都上架了"
     assert space_text("Disney+上架了新片") == "Disney+ 上架了新片"
     assert space_text("Disney+上架了C++課程") == "Disney+ 上架了 C++ 課程"
+    assert space_text("mo店+免運無限次 天天超取290起-momo購物網") == "mo 店+ 免運無限次 天天超取 290 起 - momo 購物網"
+    assert space_text("mo 店+ 免運無限次") == "mo 店+ 免運無限次"
     assert space_text("PS+會員") == "PS+ 會員"
     assert space_text("公視+上架了新片") == "公視+ 上架了新片"
     assert space_text("如何使用PTS+（公視+）註冊與觀看？") == "如何使用 PTS+（公視+）註冊與觀看？"

@@ -2,6 +2,12 @@
 
 ## vX.Y.Z / xxxx-xx-xx
 
+- Port [pangu.js](https://github.com/vinta/pangu.js) `v10.4.0` plus unreleased `master` changes up to `74d1d531`
+  - Add spaces around `-`, `*`, `=`, and `&` between CJK and an opening bracket: `CJK-(A)` becomes `CJK - (A)`
+  - Add spaces around `-` between brackets when a hyphen on the same line touches CJK: `CJK-CJK[A]-(A)` becomes `CJK - CJK [A] - (A)`
+  - Keep bracket globs like `*[0-9].log` intact
+  - Keep `mo店+` attached as a name suffix
+  - Convert only a lone, tight middle dot to `・`; keep runs like `••••` and middle dots with spaces around them
 - Include `LICENSE` in the wheel and the sdist, and `CHANGELOG.md` in the sdist
 
 ## v6.0.0 / 2026-09-18

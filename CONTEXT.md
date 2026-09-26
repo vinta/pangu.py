@@ -22,7 +22,7 @@ Inserting whitespace between CJK and ANS characters inside one string. For the s
 The algorithm behind text spacing. Source of truth: `src/pangu/_core.py` (a 1:1 port of pangu.js `src/shared/index.ts`), exhaustive examples: the per-symbol files in `tests/core/` (ported from pangu.js `tests/shared/`). The shapes below are generic: `CJK` is any CJK character, `A` is any letter, `N` is any digit, and symbols are literal.
 
 **Symbol handling**:
-A symbol between two ANS characters binds them into a joiner token, and the symbol never gets spaces. A symbol in direct contact with CJK reads as an operator and gets spaces, unless an affix reading attaches it to its ANS side. `|` follows pipe reading. `+` follows plus reading. The separators `_` and `/` never get spaces.
+A symbol between two ANS characters binds them into a joiner token, and the symbol never gets spaces. A symbol in direct contact with CJK reads as an operator and gets spaces, unless an affix reading attaches it to its ANS side. `|` follows pipe reading. `+` follows plus reading. A `-` between two brackets follows hyphen reading. The separators `_` and `/` never get spaces.
 
 **Joiner token**:
 ANS characters that any symbol joins tight (`A/B`, `26/30`, `vinta/hal-9000`, `S&P`, `Q&A`, `A+B`, `5+5`, `foo=bar&baz=1`, `A<B`, `HSIAO-MING`). A joiner token is never split. It is spaced from adjacent CJK as one unit. Pipes and plus signs also follow pipe reading and plus reading.
@@ -32,6 +32,9 @@ Decided per line, never across lines. If one pipe is in direct contact with CJK,
 
 **Plus reading**:
 Decided per line, never across lines. If one plus is in direct contact with CJK, every undecided plus on the line becomes a separator with spaces on both sides. This covers bundle plans (`A CJK + A`). A plus is already decided in three cases: it is adjacent to a space, an affix reading attaches it (`N+ CJK`, `CJK +N`), or it sits inside a preserved pattern (`C++`). By default, a plus after a word is a separator (`CJK+A+CJK` reads `CJK + A + CJK`, `A+CJK` reads `A + CJK`). Listed names follow name-suffix reading. Plus reading runs before the operator rules, so a `CJK+A` contact flips the line's joiners too. If no plus on the line is in direct contact with CJK, the pluses stay tight as joiner tokens (`CJK A+A CJK`, `CJK N+N CJK`). A plus touching full-width punctuation stays tight on that side. A plus after a closing bracket is a separator before an opening full-width bracket or quote, even when it is the line's only plus. Only the closing-bracket side gets a space. See pangu.js ADR 0022.
+
+**Hyphen reading**:
+Decided per line, never across lines. If one hyphen is in direct contact with CJK, every hyphen between a closing bracket and an opening bracket on the line becomes a separator with spaces on both sides. This covers data series titles (`CJK-CJK[A]-(A)` reads `CJK - CJK [A] - (A)`). Only a hyphen between brackets flips; a hyphen inside a joiner token stays tight (`HSIAO-MING`, `USB-C`). Hyphen reading runs before the operator rules. If no hyphen on the line is in direct contact with CJK, a hyphen between brackets stays tight (`CJK[A]-(A)`). See pangu.js ADR 0032.
 
 **Affix reading**:
 A symbol that attaches to its ANS side at a CJK boundary instead of reading as an operator. Four cases: `+` before digits as a sign (`CJK +N`), `-` before a lowercase flag (`CJK -m CJK`), `+` after a whole digit run as a suffix (`CJK N+ CJK`, never `AN+ CJK`), and single-letter grades (`A+`, `D-`). A plus after a word is not an affix: `A+CJK` reads as a separator (`A + CJK`); see plus reading and pangu.js ADR 0019. A hyphen before digits is not an affix: `CJK-N` reads as an operator (`N CJK - N CJK`, `CJK - N CJK`); see pangu.js ADR 0015. A capitalized word after a hyphen keeps the operator reading (`CJK - Vinta`).
@@ -46,10 +49,10 @@ A `+` or `-` attached to a listed name, such as `Disney+`, `公視+`, or `AB-`. 
 The invariant behind every symbol rule. ANS text that has no contact with CJK is never modified. A symbol must be in direct contact with CJK to read as an operator. So CJK elsewhere in the line or text never allows spacing between ANS characters.
 
 **Pattern preservation**:
-Some tokens keep their internal shape, even where an operator reading would otherwise apply: compound words (`state-of-the-art`, `GPT-5`, `claude-4-opus`), programming terms (`C++`, `A+`, `i++`, `D-`, `C#`, `F#`), arrow tokens (`=>`, `->`), glob patterns (`*.log`, `templates/*.html`), and file paths (`/usr/bin`, `src/main.py`, `C:\Users\`).
+Some tokens keep their internal shape, even where an operator reading would otherwise apply: compound words (`state-of-the-art`, `GPT-5`, `claude-4-opus`), programming terms (`C++`, `A+`, `i++`, `D-`, `C#`, `F#`), arrow tokens (`=>`, `->`), glob patterns (`*.log`, `*[0-9].log`, `templates/*.html`), and file paths (`/usr/bin`, `src/main.py`, `C:\Users\`).
 
 **Punctuation**:
-Half-width punctuation is not converted to full-width, with two exceptions. A colon that is in direct contact with CJK and sits right before a parenthesis becomes the full-width colon `\uFF1A`. Middle dots (`\u00B7` `\u2022` `\u2027`) normalize to the katakana middle dot `\u30FB`. Multiple consecutive punctuation marks are preserved. One or more of `!` `;` `,` `?` whose right side is in direct contact with CJK always get a trailing space, no matter what is on their left (`(N CJK),CJK`, `N%,CJK`). So a stray space that is typed before the mark is rewritten, not preserved.
+Half-width punctuation is not converted to full-width, with two exceptions. A colon that is in direct contact with CJK and sits right before a parenthesis becomes the full-width colon `\uFF1A`. A lone middle dot (`\u00B7` `\u2022` `\u2027`) normalizes to the katakana middle dot `\u30FB`; a run of two or more is kept as is, and so is a middle dot with a space or `\u00A0` on either side. Multiple consecutive punctuation marks are preserved. One or more of `!` `;` `,` `?` whose right side is in direct contact with CJK always get a trailing space, no matter what is on their left (`(N CJK),CJK`, `N%,CJK`). So a stray space that is typed before the mark is rewritten, not preserved.
 
 **HTML**:
 Tags are protected from spacing rules. Text inside attributes is processed. The exception is a tag mention, which is spaced.

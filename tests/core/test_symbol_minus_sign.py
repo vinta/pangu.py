@@ -16,6 +16,18 @@ def test_handle_symbol_as_operator():
     assert space_text("长者的智慧和复杂的维斯特洛- 文章") == "长者的智慧和复杂的维斯特洛 - 文章"
     assert space_text("1976年-2018年") == "1976 年 - 2018 年"
 
+    # Regex-boundary cases, no real text found
+    assert space_text("年增率-(GDP)") == "年增率 - (GDP)"
+    assert space_text("年增率-[GDP]") == "年增率 - [GDP]"
+    assert space_text("年增率-(季調)") == "年增率 - (季調)"
+
+    # Hyphen reading: a hyphen in direct contact with CJK flips the hyphens between brackets on its line
+    assert space_text("全球-實質國內生產毛額[GDP]-(年增率, IMF 預估)") == "全球 - 實質國內生產毛額 [GDP] - (年增率, IMF 預估)"
+    assert space_text("全球-名目國內生產毛額[GDP]-(NSA,美元,IMF 預估)") == "全球 - 名目國內生產毛額 [GDP] - (NSA, 美元, IMF 預估)"
+    assert space_text("台灣-消費者物價指數[CPI]-(年增率)") == "台灣 - 消費者物價指數 [CPI] - (年增率)"
+    assert space_text("美國-核心消費者物價指數[Core CPI]-(SA,年增率)") == "美國 - 核心消費者物價指數 [Core CPI] - (SA, 年增率)"
+    assert space_text("美國-個人消費支出物價指數[PCE]-(年增率)-第10百分位數") == "美國 - 個人消費支出物價指數 [PCE] - (年增率) - 第 10 百分位數"
+
     # DO NOT change if already spacing
     assert space_text("前面 - 後面") == "前面 - 後面"
     assert space_text("Vinta - Abc123") == "Vinta - Abc123"
@@ -32,6 +44,9 @@ def test_handle_symbol_as_joiner_token():
     assert space_text("範圍是1-10的整數") == "範圍是 1-10 的整數"
     assert space_text("用USB-C充電") == "用 USB-C 充電"
     assert space_text("照X-RAY檢查") == "照 X-RAY 檢查"
+
+    # No hyphen on the line is in direct contact with CJK
+    assert space_text("毛額[GDP]-(NSA)") == "毛額 [GDP]-(NSA)"
 
     # Hyphenated English names
     assert (
