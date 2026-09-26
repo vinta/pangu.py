@@ -2,7 +2,7 @@
 
 ## vX.Y.Z / xxxx-xx-xx
 
-- Port [pangu.js](https://github.com/vinta/pangu.js) `v10.4.0` plus unreleased `master` changes up to `74d1d531`
+- Port [pangu.js](https://github.com/vinta/pangu.js) `v10.4.0` plus unreleased `master` changes up to `8cd3a97d`
   - Add spaces around `-`, `*`, `=`, and `&` between CJK and an opening bracket: `CJK-(A)` becomes `CJK - (A)`
   - Add spaces around `-` between brackets when a hyphen on the same line touches CJK: `CJK-CJK[A]-(A)` becomes `CJK - CJK [A] - (A)`
   - Keep bracket globs like `*[0-9].log` intact
