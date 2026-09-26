@@ -4,7 +4,7 @@
 [![Python Versions](https://img.shields.io/pypi/pyversions/pangu.svg?style=for-the-badge)](https://pypi.org/project/pangu/)
 [![PyPI Downloads](https://img.shields.io/pepy/dt/pangu?style=for-the-badge)](https://pepy.tech/project/pangu)
 
-Paranoid text spacing for good readability, to automatically insert whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).
+Opinionated paranoid text spacing in Python: automatically inserts whitespace between CJK (Chinese, Japanese, Korean) and ANS (alphabetical letters, numerical digits and symbols).
 
 - [pangu.js](https://github.com/vinta/pangu.js)
 - [pangu.py](https://github.com/vinta/pangu.py)
@@ -22,7 +22,7 @@ $ pip install -U pangu
 
 ## Usage
 
-### In Python
+### Python Library
 
 ```python
 import pangu
@@ -37,7 +37,7 @@ pangu.has_proper_spacing("聽說 Hadoop 工程師睡不著的時候都會 Map/Re
 # True
 ```
 
-### In CLI
+### CLI
 
 ```bash
 $ pangu-py "為了讓公司的開發流程正常化，有人提議要導入DevOps，但是因為有部分工程師反對，主管決定讓大家投票表決，有三個選項1.導入2.不導入3.維持現狀"
