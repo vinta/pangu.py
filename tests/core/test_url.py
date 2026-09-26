@@ -32,7 +32,7 @@ def test_leave_the_inside_of_a_url_untouched():
 
 
 # FIXME: CJK characters continue the URL, and no rule tells URL-internal CJK from prose written tight after the URL. See pangu.js ADR 0026
-@pytest.mark.xfail(strict=True, reason="FIXME: it.todo upstream")
+@pytest.mark.xfail(strict=True, reason="FIXME: it.fails upstream")
 def test_space_a_url_from_cjk_on_both_sides():
     assert space_text("搜尋https://www.google.com/search?q=pangu.js&hl=zh-TW看看") == "搜尋 https://www.google.com/search?q=pangu.js&hl=zh-TW 看看"
 

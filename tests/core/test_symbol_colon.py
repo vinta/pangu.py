@@ -15,14 +15,14 @@ def test_handle_symbol():
     assert space_text("前面: I have no idea後面") == "前面: I have no idea 後面"
 
 
-# FIXME
-@pytest.mark.xfail(strict=True, reason="FIXME: it.todo upstream")
+# FIXME: See https://github.com/vinta/pangu.js/issues/316
+@pytest.mark.xfail(strict=True, reason="FIXME: it.fails upstream")
 def test_handle_symbol_as_emoticon():
     assert space_text("前面:)後面") == "前面 :) 後面"
 
 
-# FIXME
-@pytest.mark.xfail(strict=True, reason="FIXME: it.todo upstream")
+# FIXME: But rare cases, I suppose?
+@pytest.mark.xfail(strict=True, reason="FIXME: it.fails upstream")
 def test_handle_symbol_as_separator():
     assert space_text("前面:後面:再後面") == "前面:後面:再後面"
     assert space_text("前面:後面:再後面:更後面") == "前面:後面:再後面:更後面"

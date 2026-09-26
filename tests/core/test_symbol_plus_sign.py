@@ -38,7 +38,7 @@ def test_handle_symbol_as_separator():
 
 
 # FIXME
-@pytest.mark.xfail(strict=True, reason="FIXME: it.todo upstream")
+@pytest.mark.xfail(strict=True, reason="FIXME: it.fails upstream")
 def test_handle_symbol_as_separator_after_a_product_name_ending_in_a_digit():
     assert space_text("Switch 2+瑪利歐賽車世界同捆組") == "Switch 2 + 瑪利歐賽車世界同捆組"
 
