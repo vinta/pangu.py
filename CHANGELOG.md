@@ -1,6 +1,6 @@
 # Changelog
 
-## vX.Y.Z / xxxx-xx-xx
+## v6.1.0 / 2026-10-11
 
 - Port [pangu.js](https://github.com/vinta/pangu.js) `v10.4.1`
   - Add spaces around `-`, `*`, `=`, and `&` between CJK and an opening bracket: `CJK-(A)` becomes `CJK - (A)`
