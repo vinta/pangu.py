@@ -8,6 +8,7 @@
   - Keep bracket globs like `*[0-9].log` intact
   - Keep `mo店+` attached as a name suffix
   - Convert only a lone, tight middle dot to `・`; keep runs like `••••` and middle dots with spaces around them
+- Support Python 3.15
 - Include `LICENSE` in the wheel and the sdist, and `CHANGELOG.md` in the sdist
 
 ## v6.0.0 / 2026-09-18
