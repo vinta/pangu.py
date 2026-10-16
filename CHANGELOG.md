@@ -1,5 +1,9 @@
 # Changelog
 
+## vX.Y.Z / xxxx-xx-xx
+
+- Build with `flit_core` instead of `uv_build`
+
 ## v6.1.0 / 2026-10-11
 
 - Port [pangu.js](https://github.com/vinta/pangu.js) `v10.4.1`
